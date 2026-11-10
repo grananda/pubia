@@ -1,0 +1,15 @@
+# Cachés de las skills
+**/.cache/
+__pycache__/
+*.py[cod]
+
+# Generado por el workflow de release
+RELEASE_NOTES.md
+
+# El manuscrito y las revisiones viven en la carpeta de la novela, nunca en este
+# repo. Si alguien usa la raíz del repo como carpeta de trabajo, que no se cuelen.
+manuscrito/
+revisiones/
+*.docx
+
+.DS_Store

@@ -1,0 +1,37 @@
+{
+  "novela": "Título de la novela",
+  "autor": "Nombre del autor",
+  "idioma": "es",
+  "variedad": "es-PR",
+  "tratamiento": "Diálogos en ustedes; nada de vosotros salvo personajes peninsulares",
+  "epocas": [
+    {
+      "id": "1868",
+      "rango": [1866, 1873],
+      "marco": "Puerto Rico colonial español; régimen de gobernadores con facultades omnímodas; Grito de Lares (1868); abolición de la esclavitud (1873)",
+      "capitulos": "1-14"
+    },
+    {
+      "id": "1898",
+      "rango": [1898, 1917],
+      "marco": "Invasión y ocupación estadounidense; cambio de moneda y de administración; primeros anglicismos en el habla",
+      "capitulos": "15-28"
+    }
+  ],
+  "scrivener_sync": "/ruta/absoluta/a/Novela-sync",
+  "subcarpeta_borrador": "Draft",
+  "modo_parrafos": "lineas",
+  "biblia": "biblia",
+  "revisiones": "revisiones",
+  "investigacion_compartida": null,
+  "revisor": "pubia",
+  "comentarios": "margen",
+  "tipografia": "Times New Roman",
+  "cuerpo": 11,
+  "convenciones": {
+    "raya_dialogo": "—",
+    "comillas": "«»",
+    "pensamiento": "cursiva",
+    "cifras": "años en cifras; cantidades menores de cien en letra"
+  }
+}

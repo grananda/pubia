@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El ciclo de PUBIA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper:   #F1F2EE;
+    --surface: #FBFBF9;
+    --ink:     #141A22;
+    --slate:   #5A6672;
+    --line:    #C9CDC8;
+    --rojo:    #C00000;
+    --azul:    #1F4E79;
+    --azul-sombra: rgba(31, 78, 121, 0.07);
+    --rojo-sombra: rgba(192, 0, 0, 0.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:   #0F1317;
+      --surface: #171C22;
+      --ink:     #E7E9E4;
+      --slate:   #9AA5AF;
+      --line:    #2B333C;
+      --rojo:    #EF8277;
+      --azul:    #8FB7DE;
+      --azul-sombra: rgba(143, 183, 222, 0.10);
+      --rojo-sombra: rgba(239, 130, 119, 0.10);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:   #0F1317;
+    --surface: #171C22;
+    --ink:     #E7E9E4;
+    --slate:   #9AA5AF;
+    --line:    #2B333C;
+    --rojo:    #EF8277;
+    --azul:    #8FB7DE;
+    --azul-sombra: rgba(143, 183, 222, 0.10);
+    --rojo-sombra: rgba(239, 130, 119, 0.10);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .envoltorio {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 56px 24px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+
+  header { display: flex; flex-direction: column; gap: 14px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+  h1 {
+    font-family: Newsreader, Georgia, serif;
+    font-size: clamp(34px, 5.4vw, 52px);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .tesis {
+    font-family: Newsreader, Georgia, serif;
+    font-size: clamp(17px, 2.1vw, 21px);
+    line-height: 1.5;
+    max-width: 60ch;
+    margin: 0;
+    color: var(--ink);
+  }
+  .tesis strong { font-weight: 600; }
+
+  section { display: flex; flex-direction: column; gap: 18px; }
+  h2 {
+    font-family: Newsreader, Georgia, serif;
+    font-size: 27px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .intro { max-width: 64ch; margin: 0; color: var(--slate); }
+
+  figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .lienzo {
+    overflow-x: auto;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 22px 0;
+  }
+  .fig { display: block; width: 100%; min-width: 660px; height: auto; color: var(--ink); }
+  figcaption {
+    font-size: 13.5px;
+    color: var(--slate);
+    max-width: 72ch;
+  }
+  figcaption b { color: var(--ink); font-weight: 600; }
+
+  svg text { font-family: "IBM Plex Sans", system-ui, sans-serif; }
+  svg .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  svg .titulo { font-weight: 600; font-size: 13px; }
+  svg .sub { font-size: 10.5px; }
+  svg .arista { font-size: 10px; font-style: italic; }
+  svg .zona {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  caption { text-align: left; color: var(--slate); font-size: 13.5px; padding-bottom: 10px; }
+  th, td { text-align: left; padding: 11px 14px 11px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+    font-weight: 500;
+  }
+  td code, p code, li code {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    background: var(--azul-sombra);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  tbody tr td:first-child { white-space: nowrap; }
+
+  .garantias { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .garantias li { display: flex; flex-direction: column; gap: 3px; padding-left: 14px; border-left: 2px solid var(--line); }
+  .garantias b { font-weight: 600; }
+  .garantias span { color: var(--slate); font-size: 13.5px; }
+  .garantias li.fuerte { border-left-color: var(--azul); }
+
+  pre {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 16px 18px;
+    margin: 0;
+    overflow-x: auto;
+  }
+  .nota-pie { color: var(--slate); font-size: 13px; max-width: 70ch; margin: 0; }
+  :focus-visible { outline: 2px solid var(--azul); outline-offset: 2px; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+<style>
+  /* reset equivalente al que inyecta el host al publicar */
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="envoltorio">
+
+  <header>
+    <p class="eyebrow">Marketplace · plugin pubia · v0.2.0</p>
+    <h1>El ciclo de PUBIA</h1>
+    <p class="tesis">Escribes en Scrivener. PUBIA lee el capítulo, lo cruza con la memoria de la novela y te devuelve un <code>.docx</code> de sugerencias. <strong>Las correcciones las tecleas tú:</strong> el manuscrito es de solo lectura, y eso es el producto, no una limitación.</p>
+  </header>
+
+  <section>
+    <h2>Una revisión, de principio a fin</h2>
+    <p class="intro">El texto baja por el centro, de Scrivener al documento anotado. La biblia entra por la izquierda y es lo que permite revisar el capítulo 31 contra lo que estableció el 4. El manuscrito vuelve a subir solo por tus manos.</p>
+
+    <figure>
+      <div class="lienzo">
+        <svg class="fig" viewBox="0 0 980 700" role="img" aria-label="Diagrama del ciclo de revisión: Scrivener sincroniza a una carpeta externa que PUBIA solo lee; leer_manuscrito.py extrae el texto canónico; pubia revisa lo cruza con la biblia y con la investigación histórica y produce las marcas; anota_docx.py genera el .docx; el autor corrige a mano en Scrivener y pubia decisiones devuelve a la biblia lo que ha rechazado.">
+          <defs>
+            <marker id="f1-punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+            </marker>
+            <marker id="f1-punta-azul" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--azul)"></path>
+            </marker>
+          </defs>
+
+          <!-- frontera de solo lectura -->
+          <line x1="14" y1="192" x2="966" y2="192" stroke="currentColor" stroke-width="1" stroke-dasharray="7 5" opacity="0.5"></line>
+          <text class="zona" x="14" y="184" fill="var(--slate)">el manuscrito vive arriba · pubia solo lee</text>
+          <text class="zona" x="14" y="207" fill="var(--slate)">pubia escribe solo en biblia/ y revisiones/</text>
+
+          <!-- N1 Scrivener (del autor: trazo doble) -->
+          <rect x="340" y="24" width="300" height="54" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="2.5"></rect>
+          <text class="titulo" x="490" y="46" text-anchor="middle" fill="currentColor">Scrivener</text>
+          <text class="sub" x="490" y="64" text-anchor="middle" fill="var(--slate)">escribes el capítulo</text>
+
+          <line x1="490" y1="78" x2="490" y2="112" stroke="currentColor" stroke-width="1.4" marker-end="url(#f1-punta)"></line>
+          <text class="arista" x="500" y="99" fill="var(--slate)">sincronizas</text>
+
+          <!-- N2 carpeta de sincronización -->
+          <rect x="340" y="116" width="300" height="54" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 4"></rect>
+          <text class="titulo mono" x="490" y="138" text-anchor="middle" fill="currentColor">Novela-sync/Draft/</text>
+          <text class="sub" x="490" y="156" text-anchor="middle" fill="var(--slate)">un .rtf por escena, en el orden del binder</text>
+
+          <line x1="490" y1="170" x2="490" y2="216" stroke="currentColor" stroke-width="1.4" marker-end="url(#f1-punta)"></line>
+          <text class="arista" x="500" y="208" fill="var(--slate)">lee</text>
+
+          <!-- N3 leer_manuscrito -->
+          <rect x="340" y="220" width="300" height="62" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.2"></rect>
+          <text class="titulo mono" x="490" y="242" text-anchor="middle" fill="currentColor">leer_manuscrito.py</text>
+          <text class="sub mono" x="490" y="259" text-anchor="middle" fill="var(--slate)">cap-07.fuente.json</text>
+          <text class="sub" x="490" y="274" text-anchor="middle" fill="var(--slate)">párrafos numerados + huella SHA-256</text>
+
+          <line x1="490" y1="282" x2="490" y2="316" stroke="currentColor" stroke-width="1.4" marker-end="url(#f1-punta)"></line>
+
+          <!-- N4 pubia revisa -->
+          <rect x="340" y="320" width="300" height="106" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.8"></rect>
+          <text class="titulo mono" x="490" y="343" text-anchor="middle" fill="currentColor">pubia revisa</text>
+          <text class="sub" x="490" y="361" text-anchor="middle" fill="var(--slate)">siete pasadas: variedad y tratamiento,</text>
+          <text class="sub" x="490" y="375" text-anchor="middle" fill="var(--slate)">ortografía, gramática, continuidad,</text>
+          <text class="sub" x="490" y="389" text-anchor="middle" fill="var(--slate)">historia, narrativa, diagnóstico de estilo</text>
+          <text class="sub mono" x="490" y="410" text-anchor="middle" fill="currentColor">marcas.json + impresion.md</text>
+
+          <line x1="490" y1="426" x2="490" y2="460" stroke="currentColor" stroke-width="1.4" marker-end="url(#f1-punta)"></line>
+
+          <!-- N5 anota_docx -->
+          <rect x="340" y="464" width="300" height="62" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.2"></rect>
+          <text class="titulo mono" x="490" y="486" text-anchor="middle" fill="currentColor">anota_docx.py</text>
+          <text class="sub" x="490" y="503" text-anchor="middle" fill="var(--slate)">cuerpo construido desde la fuente, nunca reescrito</text>
+          <text class="sub mono" x="490" y="518" text-anchor="middle" fill="currentColor">cap-07-v1.docx</text>
+
+          <line x1="490" y1="526" x2="490" y2="560" stroke="currentColor" stroke-width="1.4" marker-end="url(#f1-punta)"></line>
+
+          <!-- N6 el autor corrige (trazo doble) -->
+          <rect x="340" y="564" width="300" height="54" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="2.5"></rect>
+          <text class="titulo" x="490" y="586" text-anchor="middle" fill="currentColor">Corriges a mano en Scrivener</text>
+          <text class="sub" x="490" y="604" text-anchor="middle" fill="var(--slate)">decides marca por marca</text>
+
+          <!-- retorno al manuscrito -->
+          <path d="M 640 591 H 940 V 51 H 648" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#f1-punta)"></path>
+          <text class="arista" x="930" y="108" text-anchor="end" fill="var(--slate)">el manuscrito</text>
+          <text class="arista" x="930" y="122" text-anchor="end" fill="var(--slate)">solo lo cambias tú</text>
+
+          <!-- N9 pubia biblia -->
+          <rect x="20" y="212" width="268" height="62" rx="2" fill="var(--surface)" stroke="var(--azul)" stroke-width="1.2"></rect>
+          <text class="titulo mono" x="154" y="234" text-anchor="middle" fill="var(--azul)">pubia biblia</text>
+          <text class="sub" x="154" y="251" text-anchor="middle" fill="var(--slate)">absorbe los hechos nuevos del capítulo</text>
+          <text class="sub" x="154" y="265" text-anchor="middle" fill="var(--slate)">y las formas de habla que usa</text>
+          <path d="M 334 246 H 294" fill="none" stroke="var(--azul)" stroke-width="1.4" marker-end="url(#f1-punta-azul)"></path>
+          <text class="arista" x="314" y="238" text-anchor="middle" fill="var(--slate)">texto</text>
+          <path d="M 154 274 V 290" fill="none" stroke="var(--azul)" stroke-width="1.4" marker-end="url(#f1-punta-azul)"></path>
+
+          <!-- N7 biblia -->
+          <rect x="20" y="296" width="268" height="152" rx="2" fill="var(--azul-sombra)" stroke="var(--azul)" stroke-width="1.8"></rect>
+          <text class="titulo mono" x="36" y="320" fill="var(--azul)">biblia/</text>
+          <text class="sub" x="36" y="337" fill="var(--slate)">la memoria de la novela, en Markdown</text>
+          <text class="sub mono" x="36" y="358" fill="currentColor">personajes · cronologia · lugares</text>
+          <text class="sub mono" x="36" y="374" fill="currentColor">tramas · lexico-y-estilo</text>
+          <text class="sub mono" x="36" y="390" fill="currentColor">investigacion · decisiones</text>
+          <text class="sub" x="36" y="412" fill="var(--slate)">cada hecho con su capítulo;</text>
+          <text class="sub" x="36" y="426" fill="var(--slate)">cada hallazgo con su fuente</text>
+          <text class="sub" x="36" y="440" fill="var(--slate)">y su vigencia</text>
+          <path d="M 288 372 H 334" fill="none" stroke="var(--azul)" stroke-width="1.8" marker-end="url(#f1-punta-azul)"></path>
+          <text class="arista" x="311" y="364" text-anchor="middle" fill="var(--slate)">canon</text>
+
+          <!-- N8 pubia decisiones -->
+          <rect x="20" y="540" width="268" height="74" rx="2" fill="var(--surface)" stroke="var(--azul)" stroke-width="1.2"></rect>
+          <text class="titulo mono" x="154" y="562" text-anchor="middle" fill="var(--azul)">pubia decisiones</text>
+          <text class="sub" x="154" y="579" text-anchor="middle" fill="var(--slate)">lee la columna Decisión del .docx</text>
+          <text class="sub" x="154" y="593" text-anchor="middle" fill="var(--slate)">y compara el manuscrito corregido</text>
+          <text class="sub" x="154" y="607" text-anchor="middle" fill="var(--slate)">con lo que se propuso</text>
+          <path d="M 334 591 H 294" fill="none" stroke="var(--azul)" stroke-width="1.4" marker-end="url(#f1-punta-azul)"></path>
+          <path d="M 154 540 V 454" fill="none" stroke="var(--azul)" stroke-width="1.8" marker-end="url(#f1-punta-azul)"></path>
+          <text class="arista" x="164" y="496" fill="var(--slate)">lo que rechazas</text>
+          <text class="arista" x="164" y="510" fill="var(--slate)">no vuelve a marcarse</text>
+
+          <!-- N10 investigación -->
+          <rect x="676" y="320" width="214" height="106" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.2"></rect>
+          <text class="titulo" x="783" y="343" text-anchor="middle" fill="currentColor">Investigación</text>
+          <text class="sub" x="783" y="360" text-anchor="middle" fill="var(--slate)">primero fecha la escena,</text>
+          <text class="sub" x="783" y="374" text-anchor="middle" fill="var(--slate)">luego busca con fuentes</text>
+          <text class="sub mono" x="783" y="396" text-anchor="middle" fill="currentColor">COMPROBADO</text>
+          <text class="sub mono" x="783" y="411" text-anchor="middle" fill="var(--slate)">INCERTIDUMBRE · PLAUSIBLE</text>
+          <path d="M 672 373 H 646" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#f1-punta)"></path>
+        </svg>
+      </div>
+      <figcaption><b>El manuscrito nunca es destino de escritura.</b> La única flecha que entra en Scrivener sale de tus manos. El cuerpo del <code>.docx</code> se construye desde <code>fuente.json</code>, así que la revisión no puede alterar tu prosa ni por accidente, y el bucle azul —biblia, decisiones— es lo que hace posible revisar continuidad en una novela escrita a lo largo de meses.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Qué va en rojo y qué va en azul</h2>
+    <p class="intro">El principio rector es no escribir por el autor, y se sostiene en una sola pregunta: ¿lo zanja la norma o hace falta criterio? Toda preferencia de estilo muere en la tercera salida.</p>
+
+    <figure>
+      <div class="lienzo">
+        <svg class="fig" viewBox="0 0 980 400" role="img" aria-label="Diagrama de decisión: si una norma o un hecho ya establecido zanja el asunto, va en rojo como corrección en línea; si no, se pregunta si cruza el umbral editorial, y entonces va en azul como comentario al margen; si no lo cruza, no se marca nada.">
+          <defs>
+            <marker id="f2-punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+            </marker>
+          </defs>
+
+          <rect x="14" y="150" width="156" height="60" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.2"></rect>
+          <text class="titulo" x="92" y="177" text-anchor="middle" fill="currentColor">un hallazgo</text>
+          <text class="sub" x="92" y="194" text-anchor="middle" fill="var(--slate)">en el texto</text>
+          <path d="M 170 180 H 216" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#f2-punta)"></path>
+
+          <rect x="220" y="134" width="248" height="92" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.8"></rect>
+          <text class="titulo" x="344" y="163" text-anchor="middle" fill="currentColor">¿Lo zanja la norma</text>
+          <text class="titulo" x="344" y="180" text-anchor="middle" fill="currentColor">o un hecho ya establecido?</text>
+          <text class="sub" x="344" y="200" text-anchor="middle" fill="var(--slate)">gramática, diccionario, la biblia</text>
+          <text class="sub" x="344" y="215" text-anchor="middle" fill="var(--slate)">de la novela</text>
+
+          <path d="M 468 160 C 545 160 545 70 692 70" fill="none" stroke="var(--rojo)" stroke-width="1.8" marker-end="url(#f2-punta)" color="var(--rojo)"></path>
+          <text class="arista" x="536" y="100" fill="var(--rojo)">sí</text>
+
+          <rect x="696" y="34" width="270" height="76" rx="2" fill="var(--rojo-sombra)" stroke="var(--rojo)" stroke-width="1.8"></rect>
+          <text class="titulo" x="712" y="58" fill="var(--rojo)">ROJO · corrección en línea</text>
+          <text class="sub" x="712" y="76" fill="var(--slate)">original tachado, propuesta en negrita</text>
+          <text class="sub mono" x="712" y="94" fill="currentColor">tilde · concordancia · tratamiento · nombre</text>
+
+          <path d="M 344 226 V 256" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#f2-punta)"></path>
+          <text class="arista" x="354" y="248" fill="var(--slate)">no</text>
+
+          <rect x="220" y="260" width="248" height="104" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.8"></rect>
+          <text class="titulo" x="344" y="286" text-anchor="middle" fill="currentColor">¿Cruza el umbral?</text>
+          <text class="sub" x="344" y="306" text-anchor="middle" fill="var(--slate)">ambigüedad real, continuidad,</text>
+          <text class="sub" x="344" y="320" text-anchor="middle" fill="var(--slate)">inexactitud comprobada, lógica</text>
+          <text class="sub" x="344" y="334" text-anchor="middle" fill="var(--slate)">narrativa, caracterización</text>
+          <text class="sub" x="344" y="352" text-anchor="middle" fill="var(--slate)">que cambia sin querer</text>
+
+          <path d="M 468 290 C 560 290 580 196 692 196" fill="none" stroke="var(--azul)" stroke-width="1.8" marker-end="url(#f2-punta)" color="var(--azul)"></path>
+          <text class="arista" x="556" y="230" fill="var(--azul)">sí</text>
+
+          <rect x="696" y="156" width="270" height="80" rx="2" fill="var(--azul-sombra)" stroke="var(--azul)" stroke-width="1.8"></rect>
+          <text class="titulo" x="712" y="180" fill="var(--azul)">AZUL · comentario al margen</text>
+          <text class="sub" x="712" y="198" fill="var(--slate)">comentario real de Word, anclado</text>
+          <text class="sub" x="712" y="214" fill="var(--slate)">a la frase, con su motivo y su fuente</text>
+          <text class="sub mono" x="712" y="230" fill="currentColor">continuidad · historia · ambiguedad</text>
+
+          <path d="M 468 330 C 570 338 600 310 692 306" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#f2-punta)"></path>
+          <text class="arista" x="556" y="344" fill="var(--slate)">no</text>
+
+          <rect x="696" y="272" width="270" height="76" rx="2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 4"></rect>
+          <text class="titulo" x="712" y="296" fill="currentColor">No se marca</text>
+          <text class="sub" x="712" y="314" fill="var(--slate)">la voz, el dialecto, la metáfora atrevida,</text>
+          <text class="sub" x="712" y="330" fill="var(--slate)">el lenguaje duro que es caracterización,</text>
+          <text class="sub" x="712" y="344" fill="var(--slate)">toda preferencia de estilo</text>
+        </svg>
+      </div>
+      <figcaption><b>La regla está en el código, no solo en la doctrina.</b> El generador rechaza una corrección en rojo cuya categoría sea <code>lexico</code>, <code>estilo</code>, <code>redaccion</code>, <code>ritmo</code> o <code>voz</code>, y no escribe el documento hasta que se convierta en comentario o desaparezca. Cambiar una palabra por otra mejor es una preferencia, y las preferencias no van en rojo.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>La época es de la escena, no de la novela</h2>
+    <p class="intro">Una novela puede cruzar varios períodos, y entonces un dato histórico sin fecha de validez es una trampa: sirve para darte la razón en un capítulo y para mentirte en otro. Por eso cada hallazgo de <code>investigacion.md</code> se guarda con su vigencia.</p>
+
+    <figure>
+      <div class="lienzo">
+        <svg class="fig" viewBox="0 0 980 250" role="img" aria-label="Línea de tiempo de ejemplo: dos épocas de una novela, 1866 a 1873 con los capítulos 1 a 14 y 1898 a 1917 con los capítulos 15 a 28. Un hallazgo verificado sobre la autoridad civil tiene vigencia hasta 1898, por lo que cubre la primera época pero no la segunda.">
+          <defs>
+            <pattern id="f3-rayas" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+              <line x1="0" y1="0" x2="0" y2="7" stroke="var(--rojo)" stroke-width="1.4" opacity="0.5"></line>
+            </pattern>
+          </defs>
+
+          <!-- hallazgo con vigencia -->
+          <rect x="60" y="54" width="467" height="22" rx="2" fill="var(--azul-sombra)" stroke="var(--azul)" stroke-width="1.4"></rect>
+          <text class="sub mono" x="70" y="69" fill="var(--azul)">I-01 autoridad civil · COMPROBADO · vigencia 1825-1898</text>
+          <rect x="527" y="54" width="173" height="22" rx="2" fill="url(#f3-rayas)" stroke="var(--rojo)" stroke-width="1.2" stroke-dasharray="4 3"></rect>
+          <text class="sub" x="714" y="69" fill="var(--rojo)">aquí el mismo dato ya no vale</text>
+
+          <!-- epocas -->
+          <rect x="134" y="100" width="86" height="30" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.4"></rect>
+          <text class="sub mono" x="177" y="119" text-anchor="middle" fill="currentColor">caps. 1-14</text>
+          <text class="sub" x="177" y="146" text-anchor="middle" fill="var(--slate)">colonial</text>
+
+          <rect x="527" y="100" width="173" height="30" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.4"></rect>
+          <text class="sub mono" x="613" y="119" text-anchor="middle" fill="currentColor">caps. 15-28</text>
+          <text class="sub" x="613" y="146" text-anchor="middle" fill="var(--slate)">ocupación · entran los anglicismos</text>
+
+          <!-- eje -->
+          <line x1="60" y1="180" x2="920" y2="180" stroke="currentColor" stroke-width="1.2"></line>
+          <g fill="var(--slate)" class="sub mono" text-anchor="middle">
+            <line x1="60" y1="180" x2="60" y2="187" stroke="currentColor" stroke-width="1"></line>
+            <text x="60" y="202">1860</text>
+            <line x1="183" y1="180" x2="183" y2="187" stroke="currentColor" stroke-width="1"></line>
+            <text x="183" y="202">1870</text>
+            <line x1="306" y1="180" x2="306" y2="187" stroke="currentColor" stroke-width="1"></line>
+            <text x="306" y="202">1880</text>
+            <line x1="429" y1="180" x2="429" y2="187" stroke="currentColor" stroke-width="1"></line>
+            <text x="429" y="202">1890</text>
+            <line x1="551" y1="180" x2="551" y2="187" stroke="currentColor" stroke-width="1"></line>
+            <text x="551" y="202">1900</text>
+            <line x1="674" y1="180" x2="674" y2="187" stroke="currentColor" stroke-width="1"></line>
+            <text x="674" y="202">1910</text>
+            <line x1="797" y1="180" x2="797" y2="187" stroke="currentColor" stroke-width="1"></line>
+            <text x="797" y="202">1920</text>
+            <line x1="920" y1="180" x2="920" y2="187" stroke="currentColor" stroke-width="1"></line>
+            <text x="920" y="202">1930</text>
+          </g>
+          <line x1="527" y1="40" x2="527" y2="180" stroke="var(--rojo)" stroke-width="1.2" stroke-dasharray="4 4"></line>
+          <text class="sub mono" x="533" y="232" fill="var(--rojo)">1898 · la frontera que lo cambia todo, también el habla</text>
+        </svg>
+      </div>
+      <figcaption>Fechas de ejemplo, no las de tu novela. <b>Si una escena no se puede fechar, el corrector no afirma: pregunta.</b> Un anacronismo juzgado contra la época equivocada es peor que el silencio, porque suena verificado.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Las cinco skills</h2>
+    <table>
+      <caption>Comandos del plugin <code>pubia</code>. Solo las dos últimas columnas escriben algo, y nunca fuera de <code>biblia/</code> y <code>revisiones/</code>.</caption>
+      <thead>
+        <tr><th scope="col">Comando</th><th scope="col">Qué hace</th><th scope="col">Escribe en</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>pubia setup</code></td>
+          <td>Prepara la carpeta de la novela y pregunta lo que decide todo lo demás: variedad del español, tratamiento y los tramos de años.</td>
+          <td><code>pubia.json</code>, esqueleto de <code>biblia/</code></td>
+        </tr>
+        <tr>
+          <td><code>pubia biblia</code></td>
+          <td>Construye y mantiene la memoria: hechos con su capítulo, formas de habla que son canon, lo deducido marcado como tal.</td>
+          <td><code>biblia/</code></td>
+        </tr>
+        <tr>
+          <td><code>pubia revisa</code></td>
+          <td>El corrector. Siete pasadas, investigación con fuentes y el <code>.docx</code> con impresión como lector.</td>
+          <td><code>revisiones/</code></td>
+        </tr>
+        <tr>
+          <td><code>pubia continuidad</code></td>
+          <td>Auditoría de la obra completa: cronología, quién sabe qué, cabos sueltos, derivas de nombres y de habla.</td>
+          <td><code>revisiones/</code>, <code>biblia/contradicciones.md</code></td>
+        </tr>
+        <tr>
+          <td><code>pubia decisiones</code></td>
+          <td>Cierra el ciclo: convierte lo que rechazas en regla permanente, con tu motivo.</td>
+          <td><code>biblia/decisiones.md</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Las cuatro garantías</h2>
+    <ul class="garantias">
+      <li class="fuerte"><b>Nunca sobrescribe</b><span>Solo escribe en <code>biblia/</code> y <code>revisiones/</code>. La carpeta de Scrivener es de solo lectura, y su sincronización nunca re-importa nada de PUBIA.</span></li>
+      <li><b>El cuerpo es tu texto literal</b><span>Se construye desde el JSON extraído, no desde prosa reescrita por el modelo.</span></li>
+      <li><b>Respeta la variedad</b><span>Caza la fuga de <i>vosotros</i> donde la novela pide <i>ustedes</i>, y no normaliza nunca hacia el castellano peninsular.</span></li>
+      <li><b>Lo rechazado no vuelve</b><span><code>biblia/decisiones.md</code> es entrada obligatoria del corrector, con tu motivo en tus palabras.</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Puesta en marcha</h2>
+<pre>/plugin marketplace add ~/Git/pubia
+/plugin install pubia@pubia
+
+cd ~/novelas/&lt;novela&gt;     # la carpeta de la novela, no el repo del marketplace
+pubia setup                # variedad, épocas y ruta de sincronización
+pubia biblia               # lee lo escrito y construye la memoria
+pubia revisa cap 12</pre>
+    <p class="nota-pie">Requisito único: <code>uv</code> en el PATH. Los scripts declaran sus dependencias (<code>python-docx</code>, <code>striprtf</code>) y las resuelven al ejecutarse; no se instala nada global.</p>
+  </section>
+
+</div>
+</body>
+</html>

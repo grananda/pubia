@@ -1,0 +1,14 @@
+{
+  "name": "pubia",
+  "owner": {
+    "name": "Julio Fernández"
+  },
+  "description": "Marketplace de PUBIA: corrección y continuidad de novelas escritas en Scrivener. Revisa capítulo a capítulo contra la biblia de la novela y entrega un .docx de sugerencias (correcciones en rojo, comentarios reales de Word al margen) sin tocar nunca el manuscrito.",
+  "plugins": [
+    {
+      "name": "pubia",
+      "source": "./plugins/pubia",
+      "description": "PUBIA — pubia-setup, pubia-biblia, pubia-revisa, pubia-continuidad y pubia-decisiones. Comandos `pubia ...`."
+    }
+  ]
+}
