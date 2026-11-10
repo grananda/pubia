@@ -14,6 +14,7 @@ propio mojibake que persigue.
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -26,11 +27,31 @@ BOM = chr(0xFEFF)
 
 EXTENSIONES = {".md", ".py", ".json", ".yml", ".yaml", ".html", ".txt"}
 
+
+def ficheros_del_repo() -> list[Path]:
+    """Solo lo que el repo versiona.
+
+    Recorrer el arbol entero hacia abajo era un error: la CI instala
+    node_modules en el workspace para validar los diagramas, y acababa
+    revisando el README de una dependencia. Lo que este repo debe garantizar es
+    la codificacion de SUS ficheros, y eso es exactamente `git ls-files`.
+    """
+    r = subprocess.run(["git", "-C", str(ROOT), "ls-files", "-z"],
+                       capture_output=True, text=True)
+    if r.returncode == 0:
+        return sorted(ROOT / n for n in r.stdout.split("\0") if n)
+    # Sin git (un tarball descargado): se recorre el arbol, pero sin las
+    # carpetas de dependencias ni artefactos.
+    IGNORADAS = {".git", "node_modules", "__pycache__", ".venv", "dist", "build"}
+    return sorted(p for p in ROOT.rglob("*")
+                  if not IGNORADAS.intersection(p.parts))
+
+
 fallos: list[str] = []
 revisados = 0
 
-for ruta in sorted(ROOT.rglob("*")):
-    if not ruta.is_file() or ".git" in ruta.parts or ruta.suffix not in EXTENSIONES:
+for ruta in ficheros_del_repo():
+    if not ruta.is_file() or ruta.suffix not in EXTENSIONES:
         continue
     try:
         texto = ruta.read_text(encoding="utf-8")
