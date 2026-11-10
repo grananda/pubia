@@ -25,20 +25,44 @@ manuscrito.
 
 ## El ciclo
 
+```mermaid
+flowchart TD
+    S["Scrivener<br/>escribes el capítulo"]
+    D["Novela-sync/Draft/<br/>un fichero por escena"]
+    L["leer_manuscrito.py<br/>texto canónico + huella"]
+    R["pubia revisa<br/>siete pasadas"]
+    I["Investigación con fuentes<br/>primero fecha la escena"]
+    A["anota_docx.py"]
+    X["cap-12-v1.docx<br/>rojo en línea, comentarios de Word<br/>e impresión como lector"]
+    C["Corriges a mano en Scrivener"]
+    BI["pubia biblia"]
+    B["biblia/<br/>personajes · cronología · lugares · tramas<br/>léxico · investigación · decisiones"]
+    DE["pubia decisiones"]
+
+    S -->|"sincronizas"| D
+    D -->|"PUBIA solo lee"| L
+    L --> R
+    L --> BI
+    BI -->|"hechos nuevos, con su capítulo"| B
+    B -->|"canon y continuidad"| R
+    I --> R
+    R -->|"marcas.json + impresion.md"| A
+    A --> X
+    X -->|"lo lees y decides marca por marca"| C
+    C -->|"tecleas tú las correcciones"| S
+    C --> DE
+    DE -->|"lo rechazado no vuelve a marcarse"| B
+
+    classDef tuyo stroke-width:3px
+    classDef memoria stroke:#1F4E79,stroke-width:2px
+    class S,C tuyo
+    class B,BI,DE memoria
 ```
-Scrivener                                   PUBIA
----------                                   -----
-escribes el cap. 12
-sincronizas (Archivo > Sincronizar)  --->   pubia revisa cap 12
-                                            · lee el capítulo de la carpeta de sync
-                                            · lo cruza con biblia/
-                                            · genera revisiones/cap-12/cap-12-v1.docx
-lees el .docx y corriges a mano      <---
-                                     --->   pubia decisiones cap 12
-                                            · aprende lo que has rechazado
-                                     --->   pubia biblia
-                                            · absorbe los hechos nuevos del cap. 12
-```
+
+Trazo grueso, lo que haces tú. En azul, el bucle de memoria: es lo que permite revisar
+el capítulo 31 contra lo que estableció el 4. **La única flecha que entra en Scrivener
+sale de tus manos**, y eso es estructural: no hay otra vía de escritura hacia el
+manuscrito.
 
 Y de vez en cuando, antes de enseñar el borrador a alguien:
 
@@ -74,11 +98,13 @@ O desde una copia local del repo:
 Requisitos: `uv` en el PATH. Los scripts declaran sus propias dependencias
 (`python-docx`, `striprtf`) y las resuelven al ejecutarse; no se instala nada global.
 
-## El diagrama
+## El diagrama detallado
 
-`docs/ciclo-pubia.html` explica el funcionamiento de un vistazo: el ciclo completo de
+Arriba está el ciclo en Mermaid, que GitHub dibuja solo. `docs/ciclo-pubia.html` va más
+allá: el ciclo completo de
 una revisión, la regla del rojo y el azul, y por qué la época es una propiedad de la
-escena y no de la novela. Es un fichero autónomo: se abre en el navegador sin servidor.
+escena y no de la novela, con las tres figuras en SVG. Es un fichero autónomo: se abre en
+el navegador sin servidor.
 
 ## Primeros pasos con una novela
 

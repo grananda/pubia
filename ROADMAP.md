@@ -23,4 +23,4 @@ Estados: `propuesta` → `aceptada` → `implementada` (con versión y commit) /
 | F-15 | `pubia publica`: subir el `.docx` a Drive convertido, para leer la revisión fuera del escritorio o pasarla a un corrector humano | marketplace | propuesta | 2026-11-09 | — |
 | F-16 | Informe HTML de la revisión como alternativa al `.docx`, con aceptar/rechazar por marca y sin salir de la máquina | pubia-revisa | propuesta | 2026-11-09 | — |
 | F-17 | Investigación compartida entre novelas de la misma época mediante `investigacion_compartida` | pubia-revisa, pubia-biblia | propuesta | 2026-11-10 | — |
-| F-18 | Diagrama del ciclo en Mermaid dentro del `README.md`, versionado junto al código | marketplace | propuesta | 2026-11-10 | — |
+| F-18 | Diagrama del ciclo en Mermaid dentro del `README.md`, versionado junto al código | marketplace | **implementada** | 2026-11-10 | 0.2.2 |

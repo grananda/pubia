@@ -89,6 +89,18 @@ jobs:
       - name: Cierre y SVG de los HTML de docs/
         run: python3 .github/scripts/check_html.py
 
+      # Un bloque ```mermaid invalido no da error: se queda como un recuadro roto
+      # en la portada del repo. Va solo aqui y no en release.yml: es una
+      # comprobacion de documentacion, no una puerta de publicacion.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Los diagramas Mermaid del README dibujan
+        run: |
+          npm install --silent --no-fund --no-audit --no-save mermaid@11 jsdom
+          node .github/scripts/check_mermaid.mjs
+
       - name: Sin mojibake ni invisibles en el texto
         run: python3 .github/scripts/check_mojibake.py
 
