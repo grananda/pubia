@@ -44,6 +44,7 @@ jobs:
         run: |
           python3 .github/scripts/check_manifests.py
           python3 .github/scripts/check_skills.py
+          python3 .github/scripts/check_rutas.py
           python3 .github/scripts/check_pipeline.py
           python3 .github/scripts/check_html.py
           python3 .github/scripts/check_mojibake.py

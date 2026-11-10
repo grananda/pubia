@@ -152,6 +152,44 @@ El formato de las marcas está documentado en
 `plugins/pubia/skills/pubia-revisa/references/formato-marcas.md`, y los criterios de
 corrección en `references/criterios-correccion.md`.
 
+## Versiones y releases
+
+Mismo sistema que [`aidd-marketplace`](https://github.com/grananda/aidd-marketplace), para
+que los dos repos se publiquen igual.
+
+El marketplace tiene una **versión global** en el fichero `VERSION` de la raíz. No
+sustituye a la versión de `plugins/pubia/.claude-plugin/plugin.json` —esa es la que marca
+qué reinstala el usuario— ni a la `metadata.version` de cada `SKILL.md`: agrupa un
+conjunto de cambios en algo publicable.
+
+**Para publicar**: sube `VERSION` en la misma PR que cambia lo que sea. Al mergear a
+`main`, `release.yml` comprueba si existe la etiqueta `v<VERSION>` y, si no existe, valida,
+crea la etiqueta y publica el release. La puerta es la etiqueta y no la rama, así que el
+workflow es idempotente: puedes mergear varias PR sin tocar `VERSION` y no pasa nada, y
+re-ejecutarlo no duplica releases.
+
+Las notas las genera `release_notes.py` comparando contra la etiqueta anterior, en orden
+de lo que más urge leer: **Atención al actualizar** (versiones mayores y commits marcados
+con `!`), **Novedades** (entradas de `ROADMAP.md` que pasan a implementada), las tablas de
+**qué plugins y qué skills cambian de versión**, los **skills que ya no están donde
+estaban** y, plegados, los commits. Quien instala quiere saber dos cosas —si algo se rompe
+y si tiene que reinstalar—, y ambas van antes que el detalle.
+
+**Olvidarse de subir una versión** es el fallo evidente de tenerlas manuales, así que
+`validate.yml` lo comprueba **en los dos sentidos** en cada PR:
+
+| Sentido | Qué pasa si falta |
+|---|---|
+| `plugin.json` sube pero `VERSION` no | El release saldría sin reflejar el cambio, o no saldría |
+| Hay ficheros del plugin modificados y la misma versión | El silencioso: Claude Code cree que la copia instalada está al día, así que el cambio **nunca llega al usuario** |
+
+Ya instalado, el usuario actualiza con `/plugin marketplace update pubia`.
+
+El backlog del propio producto vive en [`ROADMAP.md`](ROADMAP.md), con los estados
+`propuesta` → `aceptada` → `implementada` / `descartada`. Es de donde salen las
+**Novedades** de cada release, así que marcar una entrada como implementada es parte de
+cerrar la feature, no papeleo aparte.
+
 ## Desarrollo
 
 La CI (`.github/workflows/validate.yml`) corre en cada PR y en cada push a `main`.
@@ -160,6 +198,7 @@ Los mismos scripts se pueden lanzar en local:
 ```
 python3 .github/scripts/check_manifests.py   # marketplace.json y plugin.json coherentes
 python3 .github/scripts/check_skills.py      # frontmatter de los 5 skills, con el límite de 1024
+python3 .github/scripts/check_rutas.py       # las rutas que los skills nombran resuelven
 python3 .github/scripts/check_pipeline.py    # extremo a extremo de los 3 scripts (necesita las deps)
 python3 .github/scripts/check_html.py        # cierre y SVG de los HTML de docs/
 python3 .github/scripts/check_mojibake.py    # codificación y caracteres invisibles
