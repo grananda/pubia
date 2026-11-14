@@ -21,7 +21,7 @@ jobs:
           python-version: '3.12'
 
       - name: Dependencias de los scripts del plugin
-        run: pip install --quiet python-docx>=1.2.0 striprtf>=0.0.26
+        run: pip install --quiet 'python-docx>=1.2.0' 'striprtf>=0.0.26'
 
       # La puerta del release no es la rama, es si la etiqueta ya existe. Asi el
       # workflow es idempotente: se puede re-ejecutar, o mergear varias PRs sin

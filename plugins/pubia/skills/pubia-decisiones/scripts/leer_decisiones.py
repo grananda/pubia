@@ -7,6 +7,9 @@
 
 Dos fuentes de verdad, combinables:
 
+Las sugerencias (violeta) son opcionales: si siguen igual se dan por
+"descartadas", que no es un rechazo ni genera regla salvo que el autor lo pida.
+
 1. La columna "Decision" de la tabla resumen del .docx, si el autor la ha
    rellenado en Word (--docx).
 2. El manuscrito despues de las correcciones manuales (--nueva-fuente): se
@@ -86,6 +89,14 @@ def inferir(marca: dict, antes: str, despues: str) -> tuple[str, str]:
         return "sin rastro", "comentario a todo el parrafo: no se puede deducir"
 
     sigue = buscar in despues
+    # Una sugerencia es opcional: dejarla tal cual es "descartada", no un
+    # rechazo que haya que convertir en regla (salvo que el autor lo diga).
+    if tipo == "sugerencia":
+        if propuesta and not sigue and propuesta in despues:
+            return "aceptada", "el fragmento ya no esta y la propuesta si"
+        if not sigue:
+            return "atendida", "el fragmento ha cambiado"
+        return "descartada", "el fragmento sigue igual: el autor no la tomo"
     if tipo == "correccion":
         if not sigue and propuesta and propuesta in despues:
             return "aceptada", "el original ya no esta y la propuesta si"
@@ -141,7 +152,8 @@ def main() -> int:
             "categoria": marca.get("categoria"),
             "buscar": marca.get("buscar", ""),
             "propuesta": marca.get("propuesta", ""),
-            "comentario": marca.get("texto", ""),
+            # Una sugerencia lleva su motivo en "nota", no en "texto".
+            "comentario": marca.get("texto") or marca.get("nota", ""),
             "decision_autor": decision,
             "nota_autor": nota_autor,
             "decision_inferida": inferida,
@@ -159,7 +171,8 @@ def main() -> int:
     rechazadas = [f for f in filas if f["decision_autor"] == "rechazada" or f["decision_inferida"] == "rechazada"]
     print("-" * 110)
     print(f"total {len(filas)}  ·  rechazadas {len(rechazadas)}  ·  "
-          f"aceptadas {sum(1 for f in filas if 'aceptada' in (f['decision_autor'], f['decision_inferida']))}")
+          f"aceptadas {sum(1 for f in filas if 'aceptada' in (f['decision_autor'], f['decision_inferida']))}  ·  "
+          f"sugerencias descartadas {sum(1 for f in filas if f['decision_inferida'] == 'descartada')}")
     if not anotadas and not despues:
         print("AVISO: sin --docx anotado ni --nueva-fuente no hay nada que deducir; "
               "pasa al menos uno de los dos.")

@@ -3,7 +3,7 @@ name: pubia-biblia
 description: PUBIA skill. Builds and maintains the novel bible via the command `pubia biblia`: the persistent memory that lets the corrector check continuity across a whole novel written over months. It reads the manuscript from the Scrivener sync folder and extracts into Markdown under biblia/ (personajes, cronologia, lugares, tramas, lexico-y-estilo, decisiones) every fact the text commits to -- exact spellings, physical traits, kinships, ages, dates, places and distances, objects, who knows what and since when, open plot threads, invented lexicon and style conventions -- each with the chapter it comes from, separating author canon from inferences still to confirm. It works incrementally by document fingerprint, never rewrites declared canon, and flags contradictions instead of picking a side. Use when the user says "actualiza la biblia", "pubia biblia", "extrae los personajes", "apunta esto como canon", "que sabemos de este personaje", or after writing new chapters.
 metadata:
   author: Julio Fernández
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # pubia-biblia (PUBIA)
@@ -54,9 +54,10 @@ Write the bible in the author's language (Spanish by default). This SKILL.md is 
 3. **Extract the text** with the reader of `pubia-revisa` (same script, same canonical form):
    ```
    uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-revisa/scripts/leer_manuscrito.py \
-     --fuente "<scrivener_sync>" --salida biblia/.cache/manuscrito.json
+     --config pubia.json --salida biblia/.cache/manuscrito.json
    ```
    Compare per-document fingerprints against the index to decide what to re-read. In `completa` mode, read everything.
+   **Long novels go by stretches.** The reader prints words per document. If what you must read exceeds roughly 30 000 words, do not load it all at once: take consecutive stretches of about that size (whole chapters, never a split chapter), and after each one **write its facts to the bible files before reading the next**. The bible on disk is the memory between stretches, not your context; a fact held only in your head while you read 80 000 more words is a fact you will lose or blur. Extract each stretch with `--filtro` on the chapter numbers, or read the paragraph ranges of the full JSON piecewise.
 4. **Read chapter by chapter, in story order**, and for each one note: new facts, facts that confirm existing ones, facts that contradict them, and what each character learns in that chapter (the knowledge state is the part nobody remembers and the part that breaks novels).
    Also collect, without judging them: every oral or dialect form the text uses (*quedao*, *pa'*, *mi'ja*, *usté*), the regional lexicon, and who addresses whom with which treatment. These go to `lexico-y-estilo.md` as canon, which is what stops the corrector from "fixing" the author's voice. A form that only appears once is still canon unless it clashes with the same character elsewhere -- in which case it is a contradiction, not an error to correct.
 5. **Update the files**, preserving the author's wording in canonical entries, appending `(cap. N)` to every fact, and keeping entries alphabetical or chronological as the template says.
@@ -66,4 +67,4 @@ Write the bible in the author's language (Spanish by default). This SKILL.md is 
 
 ## Querying mode
 
-`pubia biblia personaje "Marta"` does not rewrite anything: it reads the bible and answers what is known about that character, with chapter references, and says explicitly what is not recorded. Useful mid-writing, to avoid contradicting yourself in the first place.
+`pubia biblia personaje "Marta"` does not rewrite anything and does not read the manuscript: it searches the bible for that entry (and for the name across the other files) and answers what is known about that character, with chapter references, and says explicitly what is not recorded. Useful mid-writing, to avoid contradicting yourself in the first place.

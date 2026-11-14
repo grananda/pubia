@@ -1,8 +1,8 @@
 {
   "name": "pubia",
   "displayName": "PUBIA — corrección y continuidad de novela",
-  "version": "0.2.0",
-  "description": "Corrector y editor de continuidad para novela escrita en Scrivener. `pubia revisa` lee el capítulo de la carpeta de sincronización, lo cruza con la biblia de la novela (personajes, cronología, lugares, tramas, léxico) y entrega un .docx donde la ortografía y la gramática van en rojo en línea y la continuidad, los anacronismos, las repeticiones y la redacción van como comentarios reales de Word al margen, numerados y resumidos en una tabla con columna de decisión. Nunca sobrescribe el manuscrito: solo sugiere. `pubia biblia` mantiene la memoria de la novela, `pubia continuidad` audita la obra completa y `pubia decisiones` aprende lo que el autor rechaza.",
+  "version": "0.3.0",
+  "description": "Corrector y editor de continuidad para novela escrita en Scrivener. `pubia revisa` lee el capítulo de la carpeta de sincronización, lo cruza con la biblia de la novela (personajes, cronología, lugares, tramas, léxico) y entrega un .docx en tres niveles: en rojo en línea solo el error crucial (ortografía, gramática, concordancia, rayas de diálogo); en azul, como comentarios reales de Word al margen, lo que obliga a detenerse (continuidad, anacronismos comprobados, ambigüedad); y en violeta las sugerencias opcionales (cacofonías, repeticiones cercanas, redacción, la palabra que suena mejor), todo numerado y resumido en una tabla con columna de decisión. Nunca sobrescribe el manuscrito: solo sugiere. `pubia biblia` mantiene la memoria de la novela, `pubia continuidad` audita la obra completa y `pubia decisiones` aprende lo que el autor rechaza.",
   "author": {
     "name": "Julio Fernández"
   },

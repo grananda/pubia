@@ -27,9 +27,25 @@ dice **dónde** y **qué** anotar.
     {
       "parrafo": 4,
       "tipo": "supresion",
+      "buscar": "el ",
+      "ocurrencia": 2,
+      "categoria": "omision",
+      "nota": "Artículo duplicado: «en el el almacén»."
+    },
+    {
+      "parrafo": 4,
+      "tipo": "sugerencia",
       "buscar": ", pero el pueblo no se había movido ni un dedo",
       "categoria": "redaccion",
       "nota": "Repite con otras palabras la idea de la frase anterior."
+    },
+    {
+      "parrafo": 5,
+      "tipo": "sugerencia",
+      "buscar": "la lana la lavaba",
+      "propuesta": "lavaba la lana",
+      "categoria": "cacofonia",
+      "nota": "Tropieza al leerlo en voz alta."
     },
     {
       "parrafo": 2,
@@ -41,8 +57,8 @@ dice **dónde** y **qué** anotar.
     {
       "parrafo": 7,
       "tipo": "comentario",
-      "categoria": "ritmo",
-      "texto": "Tres frases para decir que nada ha cambiado. Con dos basta."
+      "categoria": "claridad",
+      "texto": "No queda claro si «él» es Tomás o el mayordomo: los dos acaban de hablar."
     }
   ]
 }
@@ -53,12 +69,12 @@ dice **dónde** y **qué** anotar.
 | Campo | Obligatorio | Significado |
 |---|---|---|
 | `parrafo` | sí | `id` del párrafo en `*.fuente.json`. |
-| `tipo` | sí | `correccion`, `supresion` o `comentario`. |
-| `buscar` | sí en `correccion` y `supresion`; opcional en `comentario` | Fragmento **literal** del párrafo. Sin `buscar`, un comentario ancla el párrafo entero. |
+| `tipo` | sí | `correccion` o `supresion` (rojo), `comentario` (azul) o `sugerencia` (violeta). |
+| `buscar` | sí en `correccion` y `supresion`; opcional en `comentario` y `sugerencia` | Fragmento **literal** del párrafo. Sin `buscar`, un comentario o una sugerencia anclan el párrafo entero. |
 | `ocurrencia` | no (1) | Cuál de las apariciones de `buscar` en ese párrafo. |
-| `propuesta` | sí en `correccion` | Texto que sustituye a `buscar`. |
+| `propuesta` | sí en `correccion`; opcional en `sugerencia` | Texto que sustituye a `buscar`. En una sugerencia aparece entre corchetes tras el fragmento, como opción. |
 | `categoria` | sí | Ver taxonomía. Sale en el comentario y en la tabla resumen. |
-| `nota` | no | El por qué de una corrección o supresión. Si existe, genera además un comentario al margen. |
+| `nota` | sí en `sugerencia`; opcional en el resto | El por qué. En una corrección o supresión genera además un comentario al margen; en una sugerencia **es** el comentario. |
 | `texto` | sí en `comentario` | El comentario. Es lo que leerá el autor en el margen de Word. |
 
 ## Taxonomía
@@ -71,15 +87,29 @@ referente ya establecido), `omision` (palabra omitida o duplicada), `paronimo`
 (*infligir/infringir*).
 
 `lexico` **no es categoría de rojo**: cambiar una palabra por otra mejor es una
-preferencia, y las preferencias van en azul o no van.
+preferencia, y las preferencias van en violeta, como sugerencia opcional.
 
-**Comentarios (margen o cuerpo). Umbral alto:**
+**Comentarios (azul, margen o cuerpo). Umbral alto, exigen detenerse:**
 `continuidad`, `cronologia`, `personaje`, `trama`, `historia` (anacronismo o
 inexactitud **comprobada**), `incertidumbre` (las fuentes no concluyen),
 `verosimilitud` (plausible no demostrable), `ambiguedad`, `claridad`, `logica`,
-`punto-de-vista`, `voz`, `lexico`, `repeticion`, `redaccion`, `ritmo`, `duda`.
+`punto-de-vista`, `voz`, `duda`.
 
-Una `supresion` admite las dos listas: se borra por una falta o por redacción.
+**Sugerencias (violeta). Opcionales, el autor las toma o las deja:**
+`cacofonia`, `repeticion` (misma palabra muy cerca, sin función retórica),
+`redaccion`, `ritmo`, `lexico` (una palabra que sonaría mejor o sería más precisa;
+nunca sobre oralidad, dialecto ni léxico de la novela). El fragmento va en violeta con subrayado punteado, la
+propuesta (si la hay) entre corchetes, y la `nota` al margen. Una categoría de
+sugerencia en un `comentario` se rechaza: lo opcional no va en azul.
+
+Una `supresion` también es rojo, así que usa **la misma lista cerrada** que una
+`correccion`: se borra una palabra duplicada (`omision`), una coma normativamente
+incorrecta (`puntuacion`). Borrar una frase porque sobra es criterio: va como
+`sugerencia` de `redaccion`, y el autor decide.
+
+El script lo comprueba en los tres niveles: una marca con una categoría que no es
+de su nivel —o inventada— no se pinta. Por defecto aborta; con `--tolerante` la
+omite y la lista.
 
 En los comentarios de investigación, abrir el texto con la etiqueta del hallazgo:
 `COMPROBADO:`, `INCERTIDUMBRE REAL:`, `PLAUSIBLE NO DEMOSTRABLE:`. Una
@@ -102,8 +132,9 @@ marcada como ajena a la corrección. Texto corrido, con `- ` para listas cortas.
 ## Modos de comentario
 
 `--comentarios margen` (por defecto) genera comentarios reales de Word, anclados
-al fragmento. `inline` los escribe en el cuerpo, en azul, cursiva y cuerpo menor,
-con el formato `COMENTARIO #n CATEGORIA — sobre «frase exacta»: explicación`.
+al fragmento, con la etiqueta en el color de su nivel. `inline` los escribe en el
+cuerpo, en cursiva y cuerpo menor, con el formato `COMENTARIO #n CATEGORIA — sobre
+«frase exacta»: explicación` en azul (o `SUGERENCIA #n …` en violeta).
 `ambos` hace las dos cosas. La tipografía por defecto es Times New Roman 11.
 
 ## Convención de nombres
