@@ -18,6 +18,8 @@
     --azul:    #1F4E79;
     --azul-sombra: rgba(31, 78, 121, 0.07);
     --rojo-sombra: rgba(192, 0, 0, 0.07);
+    --violeta: #7030A0;
+    --violeta-sombra: rgba(112, 48, 160, 0.07);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -30,6 +32,8 @@
       --azul:    #8FB7DE;
       --azul-sombra: rgba(143, 183, 222, 0.10);
       --rojo-sombra: rgba(239, 130, 119, 0.10);
+      --violeta: #C3A3E0;
+      --violeta-sombra: rgba(195, 163, 224, 0.10);
     }
   }
   :root[data-theme="dark"] {
@@ -42,6 +46,8 @@
     --azul:    #8FB7DE;
     --azul-sombra: rgba(143, 183, 222, 0.10);
     --rojo-sombra: rgba(239, 130, 119, 0.10);
+    --violeta: #C3A3E0;
+    --violeta-sombra: rgba(195, 163, 224, 0.10);
   }
 
   * { box-sizing: border-box; }
@@ -312,12 +318,12 @@
   </section>
 
   <section>
-    <h2>Qué va en rojo y qué va en azul</h2>
-    <p class="intro">El principio rector es no escribir por el autor, y se sostiene en una sola pregunta: ¿lo zanja la norma o hace falta criterio? Toda preferencia de estilo muere en la tercera salida.</p>
+    <h2>Qué va en rojo, en azul y en violeta</h2>
+    <p class="intro">El principio rector es no escribir por el autor, y se sostiene en tres preguntas, en orden: ¿lo zanja la norma?, ¿obliga a detenerse?, ¿hay un problema concreto de lectura? En rojo solo lo crucial; lo opcional va en violeta y el autor lo toma o lo deja. La preferencia de vocabulario muere en la última salida.</p>
 
     <figure>
       <div class="lienzo">
-        <svg class="fig" viewBox="0 0 980 400" role="img" aria-label="Diagrama de decisión: si una norma o un hecho ya establecido zanja el asunto, va en rojo como corrección en línea; si no, se pregunta si cruza el umbral editorial, y entonces va en azul como comentario al margen; si no lo cruza, no se marca nada.">
+        <svg class="fig" viewBox="0 0 980 520" role="img" aria-label="Diagrama de decisión: si una norma o un hecho ya establecido zanja el asunto, va en rojo como corrección en línea; si no, si obliga a detenerse va en azul como comentario al margen; si no, si hay un problema concreto de lectura va en violeta como sugerencia opcional; si no, no se marca nada.">
           <defs>
             <marker id="f2-punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
@@ -341,13 +347,13 @@
           <rect x="696" y="34" width="270" height="76" rx="2" fill="var(--rojo-sombra)" stroke="var(--rojo)" stroke-width="1.8"></rect>
           <text class="titulo" x="712" y="58" fill="var(--rojo)">ROJO · corrección en línea</text>
           <text class="sub" x="712" y="76" fill="var(--slate)">original tachado, propuesta en negrita</text>
-          <text class="sub mono" x="712" y="94" fill="currentColor">tilde · concordancia · tratamiento · nombre</text>
+          <text class="sub mono" x="712" y="94" fill="currentColor">ortografía · concordancia · raya · tratamiento</text>
 
           <path d="M 344 226 V 256" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#f2-punta)"></path>
           <text class="arista" x="354" y="248" fill="var(--slate)">no</text>
 
           <rect x="220" y="260" width="248" height="104" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.8"></rect>
-          <text class="titulo" x="344" y="286" text-anchor="middle" fill="currentColor">¿Cruza el umbral?</text>
+          <text class="titulo" x="344" y="286" text-anchor="middle" fill="currentColor">¿Obliga a detenerse?</text>
           <text class="sub" x="344" y="306" text-anchor="middle" fill="var(--slate)">ambigüedad real, continuidad,</text>
           <text class="sub" x="344" y="320" text-anchor="middle" fill="var(--slate)">inexactitud comprobada, lógica</text>
           <text class="sub" x="344" y="334" text-anchor="middle" fill="var(--slate)">narrativa, caracterización</text>
@@ -362,17 +368,35 @@
           <text class="sub" x="712" y="214" fill="var(--slate)">a la frase, con su motivo y su fuente</text>
           <text class="sub mono" x="712" y="230" fill="currentColor">continuidad · historia · ambiguedad</text>
 
-          <path d="M 468 330 C 570 338 600 310 692 306" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#f2-punta)"></path>
-          <text class="arista" x="556" y="344" fill="var(--slate)">no</text>
+          <path d="M 344 364 V 386" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#f2-punta)"></path>
+          <text class="arista" x="354" y="380" fill="var(--slate)">no</text>
 
-          <rect x="696" y="272" width="270" height="76" rx="2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 4"></rect>
-          <text class="titulo" x="712" y="296" fill="currentColor">No se marca</text>
-          <text class="sub" x="712" y="314" fill="var(--slate)">la voz, el dialecto, la metáfora atrevida,</text>
-          <text class="sub" x="712" y="330" fill="var(--slate)">el lenguaje duro que es caracterización,</text>
-          <text class="sub" x="712" y="344" fill="var(--slate)">toda preferencia de estilo</text>
+          <rect x="220" y="390" width="248" height="96" rx="2" fill="var(--surface)" stroke="currentColor" stroke-width="1.8"></rect>
+          <text class="titulo" x="344" y="414" text-anchor="middle" fill="currentColor">¿Problema concreto</text>
+          <text class="titulo" x="344" y="431" text-anchor="middle" fill="currentColor">de lectura?</text>
+          <text class="sub" x="344" y="452" text-anchor="middle" fill="var(--slate)">cacofonía, repetición muy cercana,</text>
+          <text class="sub" x="344" y="467" text-anchor="middle" fill="var(--slate)">frase que obliga a releer, ritmo</text>
+
+          <path d="M 468 418 C 570 418 590 330 692 330" fill="none" stroke="var(--violeta)" stroke-width="1.8" marker-end="url(#f2-punta)" color="var(--violeta)"></path>
+          <text class="arista" x="566" y="366" fill="var(--violeta)">sí</text>
+
+          <rect x="696" y="290" width="270" height="80" rx="2" fill="var(--violeta-sombra)" stroke="var(--violeta)" stroke-width="1.8"></rect>
+          <text class="titulo" x="712" y="314" fill="var(--violeta)">VIOLETA · sugerencia opcional</text>
+          <text class="sub" x="712" y="332" fill="var(--slate)">subrayado punteado, propuesta entre</text>
+          <text class="sub" x="712" y="348" fill="var(--slate)">corchetes: el autor la toma o la deja</text>
+          <text class="sub mono" x="712" y="364" fill="currentColor">cacofonia · repeticion · redaccion</text>
+
+          <path d="M 468 466 C 570 470 600 458 692 458" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#f2-punta)"></path>
+          <text class="arista" x="566" y="482" fill="var(--slate)">no</text>
+
+          <rect x="696" y="420" width="270" height="76" rx="2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 4"></rect>
+          <text class="titulo" x="712" y="444" fill="currentColor">No se marca</text>
+          <text class="sub" x="712" y="462" fill="var(--slate)">la voz, el dialecto, la metáfora atrevida,</text>
+          <text class="sub" x="712" y="478" fill="var(--slate)">el lenguaje duro que es caracterización,</text>
+          <text class="sub" x="712" y="492" fill="var(--slate)">la palabra que «suena mejor»</text>
         </svg>
       </div>
-      <figcaption><b>La regla está en el código, no solo en la doctrina.</b> El generador rechaza una corrección en rojo cuya categoría sea <code>lexico</code>, <code>estilo</code>, <code>redaccion</code>, <code>ritmo</code> o <code>voz</code>, y no escribe el documento hasta que se convierta en comentario o desaparezca. Cambiar una palabra por otra mejor es una preferencia, y las preferencias no van en rojo.</figcaption>
+      <figcaption><b>La regla está en el código, no solo en la doctrina.</b> Cada nivel tiene su lista cerrada de categorías y el generador no escribe el documento si una marca se sale de la suya: nada de criterio en rojo (tampoco una supresión), nada opcional en azul, y <code>lexico</code> no existe en ningún nivel. Cambiar una palabra por otra mejor es una preferencia, y las preferencias no se marcan.</figcaption>
     </figure>
   </section>
 

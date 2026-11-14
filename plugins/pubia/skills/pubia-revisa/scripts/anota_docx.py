@@ -9,11 +9,15 @@ Entradas:
   --fuente  JSON producido por leer_manuscrito.py (texto canonico del manuscrito)
   --marcas  JSON con las marcas de revision (ver references/formato-marcas.md)
 
-Salida: un .docx donde
-  - las correcciones van EN LINEA y en rojo: el original tachado y la propuesta
-    en negrita a continuacion,
-  - los comentarios (continuidad, trama, redaccion, ritmo...) van como
-    COMENTARIOS REALES de Word en el margen, con la categoria en azul,
+Salida: un .docx con tres niveles, de mas a menos imperativo:
+  - ROJO, en linea: el error objetivo y crucial (ortografia, gramatica,
+    concordancia, raya de dialogo...). El original tachado y la propuesta en
+    negrita a continuacion.
+  - AZUL, comentario real de Word al margen: lo que exige detenerse
+    (continuidad, historia comprobada, ambiguedad, logica narrativa...).
+  - VIOLETA, sugerencia opcional: lo que puede o no cambiarse (cacofonia,
+    repeticion cercana, redaccion, ritmo). El fragmento en violeta con subrayado
+    punteado, la propuesta (si la hay) entre corchetes, y el motivo al margen.
   - al final hay una tabla resumen con una columna "Decision" para que el autor
     marque que acepta y que rechaza.
 
@@ -32,18 +36,19 @@ from datetime import date
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_UNDERLINE
 from docx.shared import Cm, Pt, RGBColor
 
 ROJO = RGBColor(0xC0, 0x00, 0x00)
 AZUL = RGBColor(0x1F, 0x4E, 0x79)
+VIOLETA = RGBColor(0x70, 0x30, 0xA0)  # distinguible del rojo tambien impreso y con daltonismo
 GRIS = RGBColor(0x59, 0x59, 0x59)
 
 TIPOS_CORRECCION = {"correccion", "supresion"}
-TIPOS = TIPOS_CORRECCION | {"comentario"}
+TIPOS = TIPOS_CORRECCION | {"comentario", "sugerencia"}
 
-# Rojo: solo lo objetivo. 'lexico' NO esta aqui a proposito: cambiar una palabra
-# por otra mejor es una preferencia, y las preferencias van en azul.
+# Rojo: solo lo objetivo y crucial. 'lexico' NO esta aqui ni en ninguna otra
+# lista: cambiar una palabra por otra mejor es una preferencia y no se marca.
 CAT_CORRECCION = {
     "ortografia", "tilde", "puntuacion", "tipografia", "gramatica",
     "concordancia", "verbo", "preposicion", "dialogo", "numero",
@@ -52,12 +57,21 @@ CAT_CORRECCION = {
     "omision",       # palabra omitida o duplicada por accidente
     "paronimo",      # confusion objetiva de palabras (infligir/infringir)
 }
+# Azul: lo que exige que el autor se detenga. Umbral alto.
 CAT_COMENTARIO = {
     "continuidad", "cronologia", "personaje", "trama", "historia",
-    "verosimilitud", "repeticion", "redaccion", "ritmo", "voz",
-    "punto-de-vista", "claridad", "duda", "ambiguedad", "lexico",
-    "logica", "incertidumbre",
+    "verosimilitud", "voz", "punto-de-vista", "claridad", "duda",
+    "ambiguedad", "logica", "incertidumbre",
 }
+# Violeta: opcional. Un problema concreto de lectura que el autor puede o no
+# querer tocar; nunca una palabra que simplemente guste mas.
+CAT_SUGERENCIA = {
+    "cacofonia",   # sonidos que tropiezan, rimas y ecos involuntarios
+    "repeticion",  # la misma palabra muy cerca, sin funcion retorica
+    "redaccion",   # frase torpe, que obliga a releer
+    "ritmo",       # frase o tramo que se arrastra o se atropella
+}
+COLOR = {"correccion": ROJO, "supresion": ROJO, "comentario": AZUL, "sugerencia": VIOLETA}
 
 
 class ErrorDeMarcas(Exception):
@@ -88,8 +102,14 @@ def etiqueta(categoria: str) -> str:
 
 # ------------------------------------------------------------ preparar marcas
 
-def preparar(fuente: dict, marcas_json: dict, avisos: list[str]) -> dict[int, list[dict]]:
-    """Valida las marcas y las agrupa por parrafo, resueltas a offsets."""
+def preparar(fuente: dict, marcas_json: dict, avisos: list[str],
+             tolerante: bool = False) -> dict[int, list[dict]]:
+    """Valida las marcas y las agrupa por parrafo, resueltas a offsets.
+
+    Estricto por defecto: cualquier marca invalida aborta. Con `tolerante`, las
+    marcas invalidas (y la segunda de cada par que se solapa) se omiten y se
+    reportan en `avisos`; las validas se pintan igual.
+    """
     por_id = {p["id"]: p for p in fuente["parrafos"]}
     errores: list[str] = []
     marcas: list[dict] = []
@@ -110,25 +130,43 @@ def preparar(fuente: dict, marcas_json: dict, avisos: list[str]) -> dict[int, li
         if not categoria:
             errores.append(f"{ref}: falta 'categoria'")
             continue
-        if tipo == "correccion" and categoria in ("lexico", "estilo", "redaccion", "ritmo", "voz"):
+        # Guardarrail del rojo: lista PERMITIDA, no prohibida. Todo lo que va en
+        # rojo (correccion o supresion) tiene que ser de una categoria objetiva;
+        # una categoria inventada o de criterio no entra, ni como aviso.
+        if tipo in TIPOS_CORRECCION and categoria not in CAT_CORRECCION:
+            motivo = ("es una preferencia" if categoria in CAT_COMENTARIO or categoria == "estilo"
+                      else "no es una categoria objetiva conocida")
             errores.append(
-                f"{ref}: una correccion en rojo no puede ser de categoria '{categoria}'. "
-                f"Cambiar una palabra por otra mejor es una preferencia: va como comentario "
-                f"(tipo 'comentario') o no va. Ver criterios-correccion.md, principio rector."
+                f"{ref}: una {tipo} en rojo no puede ser de categoria '{categoria}': {motivo}. "
+                f"Lo que exige criterio es una preferencia: va como comentario (tipo 'comentario') "
+                f"o no va. Categorias de rojo: {', '.join(sorted(CAT_CORRECCION))}. "
+                f"Ver criterios-correccion.md, principio rector."
             )
             continue
-        conocidas = (CAT_CORRECCION if tipo == "correccion"
-                     else CAT_CORRECCION | CAT_COMENTARIO if tipo == "supresion"
-                     else CAT_COMENTARIO)
-        if categoria not in conocidas:
-            avisos.append(f"{ref}: categoria '{categoria}' no es de las habituales para '{tipo}'")
+        if tipo == "sugerencia" and categoria not in CAT_SUGERENCIA:
+            errores.append(
+                f"{ref}: una sugerencia no puede ser de categoria '{categoria}'. Categorias de "
+                f"sugerencia: {', '.join(sorted(CAT_SUGERENCIA))}. "
+                + ("Lo objetivo va en rojo (correccion); lo que exige detenerse, en azul (comentario)."
+                   if categoria in CAT_CORRECCION | CAT_COMENTARIO else
+                   "Cambiar una palabra por otra mejor es una preferencia y no se marca.")
+            )
+            continue
+        if tipo == "comentario" and categoria in CAT_SUGERENCIA:
+            errores.append(
+                f"{ref}: '{categoria}' es opcional para el autor: va como 'sugerencia' (violeta), "
+                f"no como comentario en azul, que es para lo que exige detenerse."
+            )
+            continue
+        if tipo == "comentario" and categoria not in CAT_COMENTARIO:
+            avisos.append(f"{ref}: categoria '{categoria}' no es de las habituales para un comentario")
 
         buscar = bruta.get("buscar")
         try:
             if buscar:
                 inicio, fin = localizar(parrafo["texto"], buscar, int(bruta.get("ocurrencia", 1)))
-            elif tipo == "comentario":
-                inicio, fin = 0, len(parrafo["texto"])  # comentario a todo el parrafo
+            elif tipo in ("comentario", "sugerencia"):
+                inicio, fin = 0, len(parrafo["texto"])  # nota a todo el parrafo
             else:
                 raise ErrorDeMarcas("una correccion o supresion necesita 'buscar'")
         except ErrorDeMarcas as exc:
@@ -142,6 +180,10 @@ def preparar(fuente: dict, marcas_json: dict, avisos: list[str]) -> dict[int, li
         if tipo == "comentario" and not str(bruta.get("texto", "")).strip():
             errores.append(f"{ref}: un comentario necesita 'texto'")
             continue
+        if tipo == "sugerencia" and not str(bruta.get("nota", "")).strip():
+            errores.append(f"{ref}: una sugerencia necesita 'nota': el motivo es lo que le "
+                           f"permite al autor decidir si la quiere")
+            continue
 
         marcas.append({
             "ref": ref,
@@ -150,35 +192,46 @@ def preparar(fuente: dict, marcas_json: dict, avisos: list[str]) -> dict[int, li
             "categoria": categoria,
             "inicio": inicio,
             "fin": fin,
+            "anclada": bool(buscar),
             "buscar": buscar or parrafo["texto"],
             "propuesta": bruta.get("propuesta", ""),
             "nota": bruta.get("nota", ""),
             "texto": bruta.get("texto", ""),
         })
 
-    if errores:
+    if errores and not tolerante:
         raise ErrorDeMarcas("\n".join(errores))
+    avisos.extend(f"OMITIDA {e}" for e in errores)
 
     marcas.sort(key=lambda m: (m["parrafo"], m["inicio"], 0 if m["tipo"] in TIPOS_CORRECCION else 1))
-    for n, m in enumerate(marcas, start=1):
-        m["n"] = n
+
+    # Las correcciones de un mismo parrafo no pueden solaparse entre si. Se
+    # comprueba antes de numerar, para que la numeracion #n que ve el autor no
+    # tenga huecos cuando el modo tolerante descarta alguna.
+    choques: list[str] = []
+    descartadas: set[int] = set()
+    ultima: dict[int, dict] = {}
+    for m in marcas:
+        if m["tipo"] not in TIPOS_CORRECCION:
+            continue
+        a = ultima.get(m["parrafo"])
+        if a is not None and m["inicio"] < a["fin"]:
+            choques.append(
+                f"parrafo {m['parrafo']}: {a['ref']} ({a['buscar']!r}) y {m['ref']} "
+                f"({m['buscar']!r}) se solapan; separa los anclajes"
+            )
+            descartadas.add(id(m))
+            continue
+        ultima[m["parrafo"]] = m
+    if choques and not tolerante:
+        raise ErrorDeMarcas("\n".join(choques))
+    avisos.extend(f"OMITIDA {c} (se conserva la primera)" for c in choques)
+    marcas = [m for m in marcas if id(m) not in descartadas]
 
     agrupadas: dict[int, list[dict]] = {}
-    for m in marcas:
+    for n, m in enumerate(marcas, start=1):
+        m["n"] = n
         agrupadas.setdefault(m["parrafo"], []).append(m)
-
-    # Las correcciones de un mismo parrafo no pueden solaparse entre si.
-    choques = []
-    for pid, grupo in agrupadas.items():
-        correcciones = [m for m in grupo if m["tipo"] in TIPOS_CORRECCION]
-        for a, b in zip(correcciones, correcciones[1:]):
-            if b["inicio"] < a["fin"]:
-                choques.append(
-                    f"parrafo {pid}: la marca #{a['n']} ({a['buscar']!r}) y la #{b['n']} "
-                    f"({b['buscar']!r}) se solapan; separa los anclajes"
-                )
-    if choques:
-        raise ErrorDeMarcas("\n".join(choques))
 
     return agrupadas
 
@@ -201,22 +254,24 @@ def estilo_base(doc: Document, tipografia: str = "Times New Roman", cuerpo: floa
 def nota_inline(doc: Document, marca: dict, cuerpo: str, cita: str) -> None:
     """Comentario en el cuerpo del documento, citando la frase exacta.
 
-    Formato heredado de la revision conservadora: azul, cursiva, mas pequeno y
-    visualmente separado del texto del autor.
+    Formato heredado de la revision conservadora: cursiva, mas pequeno y
+    visualmente separado del texto del autor, en el color de su nivel.
     """
+    color = COLOR[marca["tipo"]]
+    prefijo = "SUGERENCIA" if marca["tipo"] == "sugerencia" else "COMENTARIO"
     par = doc.add_paragraph()
     par.paragraph_format.left_indent = Cm(1.0)
     par.paragraph_format.space_before = Pt(2)
     par.paragraph_format.first_line_indent = Cm(0)
-    cab = par.add_run(f"COMENTARIO #{marca['n']} {etiqueta(marca['categoria'])}")
+    cab = par.add_run(f"{prefijo} #{marca['n']} {etiqueta(marca['categoria'])}")
     cab.bold = True
     cab.italic = True
     cab.font.size = Pt(9)
-    cab.font.color.rgb = AZUL
+    cab.font.color.rgb = color
     resto = par.add_run(f" — sobre «{recorta(cita, 110)}»: {cuerpo}")
     resto.italic = True
     resto.font.size = Pt(9)
-    resto.font.color.rgb = AZUL
+    resto.font.color.rgb = color
 
 
 def parrafo_marcado(doc: Document, parrafo: dict, grupo: list[dict], autor: str,
@@ -236,9 +291,11 @@ def parrafo_marcado(doc: Document, parrafo: dict, grupo: list[dict], autor: str,
         p.paragraph_format.first_line_indent = Cm(0.8)
 
     correcciones = [m for m in grupo if m["tipo"] in TIPOS_CORRECCION]
-    comentarios = [m for m in grupo if m["tipo"] == "comentario"]
+    # Comentarios y sugerencias se anclan igual: envuelven tramos del texto.
+    comentarios = [m for m in grupo if m["tipo"] in ("comentario", "sugerencia")]
+    sugerencias = [m for m in comentarios if m["tipo"] == "sugerencia"]
 
-    # Los comentarios no pueden partir una correccion: se ensancha su anclaje.
+    # Un anclaje no puede partir una correccion: se ensancha.
     for c in comentarios:
         for corr in correcciones:
             if corr["inicio"] < c["inicio"] < corr["fin"]:
@@ -269,7 +326,20 @@ def parrafo_marcado(doc: Document, parrafo: dict, grupo: list[dict], autor: str,
                 run.font.size = Pt(14)
             elif tipo_p == "separador":
                 run.font.color.rgb = GRIS
-            tramos.append((ini, fin, [run]))
+            # Fragmento de una sugerencia anclada a una frase (no al parrafo
+            # entero): violeta con subrayado punteado, sin tachar nada.
+            if any(sg["inicio"] <= ini and fin <= sg["fin"] and sg["anclada"] for sg in sugerencias):
+                run.font.color.rgb = VIOLETA
+                run.font.underline = WD_UNDERLINE.DOTTED
+            runs = [run]
+            # La propuesta de la sugerencia, entre corchetes, justo detras.
+            for sg in sugerencias:
+                if sg["anclada"] and sg["fin"] == fin and sg["propuesta"]:
+                    prop = p.add_run(f" [{sg['propuesta']}]")
+                    prop.italic = True
+                    prop.font.color.rgb = VIOLETA
+                    runs.append(prop)
+            tramos.append((ini, fin, runs))
             continue
 
         viejo = p.add_run(texto[ini:fin])
@@ -281,6 +351,12 @@ def parrafo_marcado(doc: Document, parrafo: dict, grupo: list[dict], autor: str,
             nuevo.bold = True
             nuevo.font.color.rgb = ROJO
             runs.append(nuevo)
+        for sg in sugerencias:  # una sugerencia ensanchada que acaba aqui
+            if sg["anclada"] and sg["fin"] == fin and sg["propuesta"]:
+                prop = p.add_run(f" [{sg['propuesta']}]")
+                prop.italic = True
+                prop.font.color.rgb = VIOLETA
+                runs.append(prop)
         tramos.append((ini, fin, runs))
 
         if marca["nota"]:
@@ -296,9 +372,13 @@ def parrafo_marcado(doc: Document, parrafo: dict, grupo: list[dict], autor: str,
         if not dentro:
             dentro = tramos or [(0, 0, [p.add_run("")])]
         runs = dentro[0][2] + dentro[-1][2]
+        if c["tipo"] == "sugerencia":
+            cuerpo = c["nota"] + (f"  [propuesta opcional: {c['propuesta']}]" if c["propuesta"] else "")
+        else:
+            cuerpo = c["texto"]
         if modo in ("margen", "ambos"):
-            comentar(doc, runs, c, c["texto"], autor, iniciales)
-        pendientes.append((c, c["texto"], texto[c["inicio"]:c["fin"]]))
+            comentar(doc, runs, c, cuerpo, autor, iniciales)
+        pendientes.append((c, cuerpo, texto[c["inicio"]:c["fin"]]))
 
     if modo in ("inline", "ambos"):
         for marca, cuerpo, cita in sorted(pendientes, key=lambda x: x[0]["n"]):
@@ -308,11 +388,13 @@ def parrafo_marcado(doc: Document, parrafo: dict, grupo: list[dict], autor: str,
 def comentar(doc: Document, runs: list, marca: dict, cuerpo: str, autor: str, iniciales: str) -> None:
     comentario = doc.add_comment([runs[0], runs[-1]], text="", author=autor, initials=iniciales)
     par = comentario.paragraphs[0] if comentario.paragraphs else comentario.add_paragraph()
-    cab = par.add_run(f"#{marca['n']} {etiqueta(marca['categoria'])}")
+    color = COLOR[marca["tipo"]]
+    prefijo = "SUGERENCIA · " if marca["tipo"] == "sugerencia" else ""
+    cab = par.add_run(f"#{marca['n']} {prefijo}{etiqueta(marca['categoria'])}")
     cab.bold = True
-    cab.font.color.rgb = AZUL
+    cab.font.color.rgb = color
     resto = par.add_run(f" — {cuerpo}")
-    resto.font.color.rgb = AZUL
+    resto.font.color.rgb = color
 
 
 def portada(doc: Document, fuente: dict, marcas_json: dict, agrupadas: dict, autor: str) -> None:
@@ -341,11 +423,13 @@ def portada(doc: Document, fuente: dict, marcas_json: dict, agrupadas: dict, aut
     tabla.style = "Table Grid"
     correcciones = [m for m in todas if m["tipo"] in TIPOS_CORRECCION]
     comentarios = [m for m in todas if m["tipo"] == "comentario"]
+    sugerencias = [m for m in todas if m["tipo"] == "sugerencia"]
     palabras = meta_f.get("total_palabras", 0) or 1
     filas = [
         ("Palabras revisadas", f"{meta_f.get('total_palabras', 0)} en {meta_f.get('total_parrafos', 0)} párrafos"),
         ("Correcciones en rojo", str(len(correcciones))),
-        ("Comentarios al margen", str(len(comentarios))),
+        ("Comentarios en azul", str(len(comentarios))),
+        ("Sugerencias opcionales en violeta", str(len(sugerencias))),
         ("Densidad", f"{len(todas) * 1000 / palabras:.1f} marcas por 1000 palabras"),
         ("Fuente", ", ".join(d["nombre"] for d in meta_f.get("documentos", []))),
         ("Huella del texto revisado", meta_f.get("sha256", "")[:16]),
@@ -368,13 +452,17 @@ def portada(doc: Document, fuente: dict, marcas_json: dict, agrupadas: dict, aut
     for texto, color, negrita in [
         ("Cómo leer este documento. ", None, True),
         ("En rojo", ROJO, True),
-        (", correcciones directas: solo lo objetivo (ortografía, concordancia, puntuación normativa, "
-         "tratamiento, grafía de un nombre ya establecido). El original queda tachado y la propuesta va "
-         "en rojo y negrita. ", None, False),
+        (", correcciones directas: solo el error objetivo (ortografía, gramática, concordancia de género "
+         "y número, puntuación y rayas de diálogo, tratamiento, grafía de un nombre ya establecido). El "
+         "original queda tachado y la propuesta va en rojo y negrita. ", None, False),
         ("En azul", AZUL, True),
-        (", observaciones contrastadas que merecen que te detengas: continuidad, verosimilitud histórica "
-         "comprobada, ambigüedad real, lógica narrativa, caracterización. Nada de preferencias de estilo. "
-         "Cada marca lleva un número que coincide con la tabla final.", None, False),
+        (", observaciones que merecen que te detengas: continuidad, verosimilitud histórica comprobada, "
+         "ambigüedad real, lógica narrativa, caracterización. ", None, False),
+        ("En violeta", VIOLETA, True),
+        (", sugerencias opcionales: cacofonías, repeticiones cercanas, redacción y ritmo. El fragmento va "
+         "subrayado en punteado y la propuesta, si la hay, entre corchetes; puedes tomarla o dejarla. "
+         "Nada de preferencias de vocabulario. Cada marca lleva un número que coincide con la tabla final.",
+         None, False),
     ]:
         run = ley.add_run(texto)
         run.bold = negrita
@@ -410,6 +498,19 @@ def recorta(texto: str, limite: int = 90) -> str:
     return texto if len(texto) <= limite else texto[: limite - 1] + "…"
 
 
+def texto_derecha(m: dict) -> str:
+    """La columna 'Propuesta o comentario' de la tabla y del resumen."""
+    nota = f"  ({m['nota']})" if m["nota"] else ""
+    if m["tipo"] == "correccion":
+        return f"→ {m['propuesta']}{nota}"
+    if m["tipo"] == "supresion":
+        return f"suprimir{nota}"
+    if m["tipo"] == "sugerencia":
+        return (f"opcional: → {m['propuesta']}{nota}" if m["propuesta"]
+                else f"opcional: {m['nota']}")
+    return m["texto"]
+
+
 def tabla_resumen(doc: Document, agrupadas: dict) -> None:
     todas = sorted((m for g in agrupadas.values() for m in g), key=lambda m: m["n"])
     if not todas:
@@ -436,12 +537,7 @@ def tabla_resumen(doc: Document, agrupadas: dict) -> None:
 
     for m in todas:
         celdas = tabla.add_row().cells
-        if m["tipo"] == "correccion":
-            derecha = f"→ {m['propuesta']}" + (f"  ({m['nota']})" if m["nota"] else "")
-        elif m["tipo"] == "supresion":
-            derecha = "suprimir" + (f"  ({m['nota']})" if m["nota"] else "")
-        else:
-            derecha = m["texto"]
+        derecha = texto_derecha(m)
         valores = [str(m["n"]), str(m["parrafo"]), etiqueta(m["categoria"]).lower(),
                    recorta(m["buscar"], 70), recorta(derecha, 140), ""]
         for celda, valor in zip(celdas, valores):
@@ -449,10 +545,8 @@ def tabla_resumen(doc: Document, agrupadas: dict) -> None:
             for par in celda.paragraphs:
                 for run in par.runs:
                     run.font.size = Pt(8.5)
-                    if celda is celdas[2] and m["tipo"] == "comentario":
-                        run.font.color.rgb = AZUL
-                    elif celda is celdas[2]:
-                        run.font.color.rgb = ROJO
+                    if celda is celdas[2]:
+                        run.font.color.rgb = COLOR[m["tipo"]]
 
 
 def seccion_impresion(doc: Document, texto: str) -> None:
@@ -508,10 +602,7 @@ def resumen_markdown(fuente: dict, marcas_json: dict, agrupadas: dict, docx: Pat
         "|---|-------|------|-----------|----------------|------------------------|----------|",
     ]
     for m in todas:
-        derecha = (f"→ {m['propuesta']}" if m["tipo"] == "correccion"
-                   else "suprimir" if m["tipo"] == "supresion" else m["texto"])
-        if m["nota"] and m["tipo"] != "comentario":
-            derecha += f" ({m['nota']})"
+        derecha = texto_derecha(m)
         celda = lambda t: recorta(t, 120).replace("|", "\\|")
         lineas.append(
             f"| {m['n']} | {m['parrafo']} | {m['tipo']} | {m['categoria']} | "
@@ -547,15 +638,12 @@ def main() -> int:
 
     avisos: list[str] = []
     try:
-        agrupadas = preparar(fuente, marcas_json, avisos)
+        agrupadas = preparar(fuente, marcas_json, avisos, tolerante=args.tolerante)
     except ErrorDeMarcas as exc:
         print("MARCAS INVÁLIDAS — no se ha generado nada:\n" + str(exc), file=sys.stderr)
-        if not args.tolerante:
-            print("\nCorrige el JSON de marcas y vuelve a ejecutar "
-                  "(o usa --tolerante para omitir las marcas que fallan).", file=sys.stderr)
-            return 1
-        marcas_json = {**marcas_json, "marcas": []}
-        agrupadas = preparar(fuente, marcas_json, avisos)
+        print("\nCorrige el JSON de marcas y vuelve a ejecutar "
+              "(o usa --tolerante para omitir solo las marcas que fallan).", file=sys.stderr)
+        return 1
 
     doc = Document()
     estilo_base(doc, args.tipografia, args.cuerpo)
@@ -600,7 +688,10 @@ def main() -> int:
 
     total = sum(len(g) for g in agrupadas.values())
     print(f"OK  {salida}")
-    print(f"    marcas aplicadas: {total}  (comentarios reales de Word + correcciones en rojo)")
+    cuenta = {t: sum(1 for g in agrupadas.values() for m in g if m["tipo"] in t)
+              for t in (("correccion", "supresion"), ("comentario",), ("sugerencia",))}
+    print(f"    marcas aplicadas: {total}  (rojo {cuenta[('correccion', 'supresion')]}, "
+          f"azul {cuenta[('comentario',)]}, violeta {cuenta[('sugerencia',)]})")
     print(f"    marcas resueltas: {sidecar}")
     print(f"    comentarios: {args.comentarios}"
           + ("  ·  con impresión como lector" if args.impresion else ""))

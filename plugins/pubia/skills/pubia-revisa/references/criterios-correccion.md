@@ -13,17 +13,31 @@ oralidad, la hipérbole o la desviación deliberada de una colocación habitual
 Antes de cuestionar una frase, leerla dentro del párrafo, del capítulo, de la
 caracterización del personaje y de la continuidad de la novela.
 
-## Los dos umbrales
+## Los tres niveles
 
-**Rojo** (corrección directa en el texto): solo lo objetivo o de muy alta
-confianza. Si una gramática, el diccionario o un hecho ya establecido en la
-novela resuelven la duda, es rojo. Si hace falta criterio, no lo es.
+Se decide en este orden, y se para en el primer sí:
+
+**Rojo** (corrección directa en el texto): solo lo **crucial y objetivo**. Si una
+gramática, el diccionario o un hecho ya establecido en la novela resuelven la
+duda, es rojo: ortografía, gramática, concordancia de género y número, rayas y
+puntuación de diálogo mal puestas, formas verbales, tratamiento. Si hace falta
+criterio, no lo es.
 
 **Azul** (comentario al margen): umbral alto. Solo cuando hay una razón concreta
-para que el autor se detenga en ese pasaje. **Ninguna preferencia de estilo
-justifica un comentario.** No llenar el documento de advertencias del tipo
-«puede funcionar si es deliberado»: si funciona razonablemente en su contexto,
-no se comenta.
+para que el autor **se detenga** en ese pasaje: continuidad, inexactitud
+comprobada, ambigüedad real, lógica narrativa. No llenar el documento de
+advertencias del tipo «puede funcionar si es deliberado»: si funciona
+razonablemente en su contexto, no se comenta.
+
+**Violeta** (sugerencia opcional): un problema **concreto de lectura** que el
+autor puede querer tocar o no: cacofonías, la misma palabra muy cerca sin función
+retórica, una frase que obliga a releer, un ritmo que tropieza. Se dice por qué,
+se ofrece una propuesta mínima si existe, y se acepta sin discusión que el autor
+la deje. Ver apartado 9.
+
+**Nada**: la preferencia. Una palabra que suena mejor a quien revisa, un sinónimo
+más neutro, una frase reordenada, una metáfora «arreglada». **No se marca en
+ningún color.**
 
 ---
 
@@ -104,8 +118,9 @@ Cuando aparezca una forma oral nueva, no marcarla: anotarla para que
 - Inconsistencias **objetivas** de nombres, rangos o referentes ya establecidos:
   la grafía de un nombre, un cargo que cambia sin motivo, un referente imposible.
 
-Nunca en rojo: una mejora estilística discutible, un sinónimo que suena mejor,
-una frase reordenada, una metáfora «arreglada».
+Nunca en rojo: una mejora estilística discutible (eso, si acaso, es violeta), un
+sinónimo que suena mejor, una frase reordenada, una metáfora «arreglada» (eso no
+es nada).
 
 ### Repertorio ortográfico y gramatical habitual
 
@@ -241,8 +256,12 @@ y cierto en 1890, y el mismo apunte serviría para equivocarse en los dos
 sentidos. Si la vigencia no se puede acotar, se dice.
 
 Cuando varias novelas comparten época y lugar, `investigacion_compartida` en
-`pubia.json` apunta a una carpeta común: lo investigado para una sirve para la
-siguiente, y no se vuelve a buscar lo mismo.
+`pubia.json` apunta a una carpeta común con su propio `investigacion.md`, en el
+mismo formato: lo investigado para una sirve para la siguiente, y no se vuelve a
+buscar lo mismo. Se consulta **siempre** junto a `biblia/investigacion.md` —escribir
+ahí sin leerlo después no serviría de nada—, y un hallazgo compartido solo vale
+para la escena si su vigencia cubre la fecha de la escena. Lo que es de la época va
+a la compartida; lo que es de esta novela, a su biblia.
 
 ## 8. Continuidad contra la biblia
 
@@ -257,21 +276,46 @@ error de continuidad más frecuente y el más dañino.
 
 Lo objetivo (una grafía, un rango) es rojo; lo interpretativo es azul.
 
-## 9. Estilo y redacción: diagnóstico, no marcas
+## 9. Violeta: sugerencias opcionales
 
-Los patrones de abajo **no se marcan uno a uno**. Si uno es sistémico en el
-capítulo, se escribe **un solo comentario** a nivel de párrafo, con el recuento,
-para que el autor decida si le interesa. Si no es sistémico, no se dice nada.
+Lo que puede o no modificarse. El autor decide sin tener que justificarse, y una
+sugerencia que deja tal cual no es un rechazo: es una sugerencia descartada.
 
-Repetición accidental a corta distancia · verbos comodín (*ser, estar, haber,
-hacer, tener, poner*) · filtros narrativos (*vio que, sintió que, se dio cuenta
-de que*) · *empezó a / comenzó a* · adverbios en *-mente* acumulados ·
-adjetivación por pares · posesivos anglicados (*metió su mano en su bolsillo*) ·
-dijo-ismos en cadena · cacofonías y rimas involuntarias · frases que pierden el
-sujeto.
+### Se marcan una a una, si de verdad chirrían
 
-Excepción: si la repetición o el patrón es claramente **accidental y chirría**
-(el mismo verbo tres veces en dos líneas), un comentario puntual está bien.
+- **Cacofonía** (`cacofonia`): sonidos que tropiezan al leer en voz alta (*la
+  lana la lavaba*), rimas y ecos involuntarios en prosa (*la emoción de la
+  canción en la estación*).
+- **Repetición cercana** (`repeticion`): la misma palabra con contenido (no
+  artículos ni preposiciones) en la misma frase o en frases contiguas, **sin
+  función retórica**. El mismo verbo tres veces en dos líneas, sí; una anáfora,
+  un leitmotiv o un personaje que repite por carácter, no.
+- **Redacción** (`redaccion`): una frase que obliga a releer para entenderla, una
+  construcción torpe que se puede señalar con el dedo, una idea dicha dos veces
+  seguidas.
+- **Ritmo** (`ritmo`): un tramo que se arrastra o se atropella sin que el pasaje
+  lo pida.
+
+### Se dicen una sola vez, con recuento
+
+Los patrones del capítulo no se marcan instancia a instancia: **una sola
+sugerencia**, anclada al párrafo donde más se nota, con el recuento: verbos
+comodín (*ser, estar, haber, hacer, tener, poner*) · filtros narrativos (*vio
+que, sintió que, se dio cuenta de que*) · *empezó a / comenzó a* · adverbios en
+*-mente* acumulados · adjetivación por pares · posesivos anglicados (*metió su
+mano en su bolsillo*) · dijo-ismos en cadena · frases que pierden el sujeto.
+
+### Umbral y medida
+
+- Pregunta de control: **¿lo notaría un lector atento sin buscarlo?** Si no, no se
+  marca.
+- La propuesta, si la hay, es la mínima que resuelve el problema, no una
+  reescritura. Si no hay una mínima, sin propuesta: basta con el motivo.
+- Por encima de unas 5 sugerencias por mil palabras, quedarse con las que más
+  chirrían y resumir el resto en una con recuento. Un documento lleno de violeta
+  entierra el rojo y el azul.
+- Nunca violeta: la voz del autor, la oralidad, el léxico regional e inventado,
+  la repetición con función, y cualquier cosa recogida en `biblia/decisiones.md`.
 
 ## 10. Lo que no se corrige nunca
 

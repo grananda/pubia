@@ -3,7 +3,7 @@ name: pubia-continuidad
 description: PUBIA skill. Cross-novel continuity audit via the command `pubia continuidad`: unlike `pubia revisa`, which works chapter by chapter, this one reads the whole manuscript against the bible and hunts what is only visible from above -- timeline impossibilities and derived ages, knowledge state (a character using a fact they cannot have yet, or asking about what they were already told), threads planted and never resolved and resolutions never planted, name drift, traits and objects that mutate between distant chapters, repeated scene beats, stalled arcs, accumulated anachronisms. It delivers a prioritized Markdown report with chapter references and quotes; it corrects no prose and proposes no style. Use when the user says "pubia continuidad", "revisa la coherencia de la novela", "que cabos sueltos tengo", "cuadra la cronologia", or before closing a draft.
 metadata:
   author: Julio Fernández
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # pubia-continuidad (PUBIA)
@@ -13,6 +13,7 @@ Use this skill for a whole-novel pass, or when they invoke:
 - `pubia continuidad` (everything written so far)
 - `pubia continuidad cap 1-14` (a stretch)
 - `pubia continuidad cronologia` / `saber` / `tramas` (one lens only)
+- "¿puede Marta saber lo de la venta en el cap. 9?" (one question: answer it, do not audit the novel)
 
 Also "revisa la coherencia de la novela", "que cabos sueltos tengo", "cuadra la cronologia", "esto hay que mirarlo antes de mandarlo".
 
@@ -24,13 +25,15 @@ Write in the author's language (Spanish by default).
 
 ## Workflow
 
-1. Read `pubia.json` and the whole bible. If the bible does not cover every chapter, run `pubia biblia` first — auditing against an outdated bible produces false findings, which is worse than no audit.
+0. **Size the job to the question.** A single question needs the bible entries it names and the chapters it cites, nothing else: grep the bible, extract those chapters with `--filtro`, quote, answer in chat. A single lens needs that lens. Only a full audit reads everything, and even then the bible goes first and the text only to confirm (step 3). Loading more than the question needs does not make the answer safer; it buries it.
+1. Read `pubia.json` and the bible (the whole bible for a full audit; the relevant files or entries for a lens or a question). If the bible does not cover every chapter, run `pubia biblia` first — auditing against an outdated bible produces false findings, which is worse than no audit.
 2. Extract the full manuscript:
    ```
    uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-revisa/scripts/leer_manuscrito.py \
-     --fuente "<scrivener_sync>" --salida revisiones/continuidad/manuscrito.json
+     --config pubia.json --salida revisiones/continuidad/manuscrito.json
    ```
 3. Audit one lens at a time, over the whole text. Never try to hold them all at once.
+   **On a long novel, the bible is the map and the text is the evidence.** Past roughly 30 000 words, do not read the whole manuscript per lens. Build each lens from the bible first (the timeline from `cronologia.md`, the knowledge state from `personajes.md`, the threads from `tramas.md`): that is where the cross-chapter view already lives. Then go to the text only to confirm or refute each candidate finding, reading just the paragraphs involved (the `documentos` ranges in the JSON tell you where each chapter starts). Lenses the bible does not cover well (`Estructura y repeticion`) go stretch by stretch, writing interim notes to `revisiones/continuidad/` between stretches. A finding is only reported once you have quoted the text, never from the bible alone.
 4. Write `revisiones/continuidad/continuidad-<fecha>.md`, prioritized.
 5. Report in chat only the blocking findings; the rest is in the file.
 

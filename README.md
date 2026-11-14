@@ -9,13 +9,19 @@ toque el manuscrito**.
 El autor escribe en Scrivener. PUBIA lee el capítulo, lo cruza con la memoria de la
 novela y devuelve un `.docx` de sugerencias.
 
-**Principio rector: no escribir por el autor.** Solo va en rojo lo objetivo
-—ortografía, concordancia, puntuación normativa, formas verbales, fuga de
-tratamiento, grafía de un nombre ya establecido—. Todo lo que exige criterio va en
-azul, como **comentarios reales de Word al margen**, y con umbral alto: continuidad,
-inexactitud histórica o médica **comprobada**, ambigüedad real, lógica narrativa,
-cambio involuntario de caracterización. Las preferencias de estilo no se marcan
-nunca. El documento cierra con una sección de **impresión como lector**, que no
+**Principio rector: no escribir por el autor.** Tres niveles, de más a menos
+imperativo:
+
+- **Rojo**, en línea: solo lo crucial y objetivo —ortografía, gramática,
+  concordancia de género y número, rayas y puntuación de diálogo, formas verbales,
+  fuga de tratamiento, grafía de un nombre ya establecido—.
+- **Azul**, como **comentarios reales de Word al margen** y con umbral alto: lo que
+  obliga a detenerse —continuidad, inexactitud histórica o médica **comprobada**,
+  ambigüedad real, lógica narrativa, cambio involuntario de caracterización—.
+- **Violeta**, sugerencias **opcionales** que el autor toma o deja: cacofonías,
+  repeticiones muy cercanas, redacción que obliga a releer, ritmo.
+
+La palabra que simplemente «suena mejor» no se marca nunca. El documento cierra con una sección de **impresión como lector**, que no
 forma parte de la corrección.
 
 Las correcciones las teclea el autor en Scrivener. PUBIA no escribe nunca en el
@@ -102,7 +108,7 @@ Requisitos: `uv` en el PATH. Los scripts declaran sus propias dependencias
 
 Arriba está el ciclo en Mermaid, que GitHub dibuja solo. `docs/ciclo-pubia.html` va más
 allá: el ciclo completo de
-una revisión, la regla del rojo y el azul, y por qué la época es una propiedad de la
+una revisión, la regla del rojo, el azul y el violeta, y por qué la época es una propiedad de la
 escena y no de la novela, con las tres figuras en SVG. Es un fichero autónomo: se abre en
 el navegador sin servidor.
 
@@ -141,8 +147,8 @@ revisiones/
 - **El cuerpo del `.docx` es el manuscrito literal.** Se construye a partir del texto
   extraído, no de texto reescrito por el modelo: la revisión no puede alterar la prosa
   ni por accidente.
-- **Rojo solo para el error objetivo.** Lo discutible va como comentario con su motivo,
-  y solo si cruza el umbral. La voz del autor, el dialecto, la oralidad, el léxico
+- **Rojo solo para el error objetivo y crucial.** Lo que obliga a detenerse va en azul
+  con su motivo, y solo si cruza el umbral; lo opcional, en violeta, sin insistir. La voz del autor, el dialecto, la oralidad, el léxico
   regional e inventado y el lenguaje duro que es caracterización histórica no son
   faltas y no se comentan.
 - **Respeta la variedad del español.** `variedad` en `pubia.json` y las reglas de
@@ -165,14 +171,20 @@ Dos scripts deterministas, para que el modelo decida *qué* marcar y no *cómo* 
 - `leer_manuscrito.py` — lee `.rtf` (Scrivener), `.txt` y `.md`, de un fichero o de la
   carpeta de sincronización completa (respeta el orden del binder, ignora `Notes/` y
   `Trash/`), y emite un JSON de párrafos numerados con su huella SHA-256.
+  `--filtro 7` elige el documento por su número del binder (no el 17 ni el 70) y
+  `--config pubia.json` toma de ahí la carpeta de sincronización (`scrivener_sync`, la
+  fuente estándar, con su `Draft/`) y `modo_parrafos`.
 - `anota_docx.py` — recibe ese JSON y el JSON de marcas y construye el `.docx` con
   comentarios OOXML reales (`w:commentRangeStart` / `w:comments`), correcciones en rojo
-  tachado más propuesta en negrita, portada con recuento por categoría, tabla resumen y
-  la sección final de impresión como lector. Es estricto: si un anclaje no resuelve o
-  dos correcciones se solapan, no escribe nada y dice cuál falla. Opciones:
+  tachado más propuesta en negrita, sugerencias en violeta con subrayado punteado y la
+  propuesta opcional entre corchetes, portada con recuento por categoría, tabla resumen y
+  la sección final de impresión como lector. Es estricto: si un anclaje no resuelve,
+  dos correcciones se solapan o una marca usa una categoría que no es de su nivel (criterio
+  en rojo, algo opcional en azul, una preferencia de vocabulario en cualquiera), no escribe
+  nada y dice cuál falla. Opciones:
   `--comentarios margen|inline|ambos` (el modo `inline` reproduce el formato
-  `COMENTARIO #n — sobre «frase exacta»: explicación` en azul y cursiva dentro del
-  cuerpo) y `--tipografia` / `--cuerpo`, por defecto Times New Roman 11.
+  `COMENTARIO #n — sobre «frase exacta»: explicación` en cursiva dentro del cuerpo, azul o
+  violeta según el nivel) y `--tipografia` / `--cuerpo`, por defecto Times New Roman 11.
 
 El formato de las marcas está documentado en
 `plugins/pubia/skills/pubia-revisa/references/formato-marcas.md`, y los criterios de
@@ -241,9 +253,16 @@ número que todavía no tiene etiqueta, así que es idempotente.
 
 ## Estado
 
-Versión 0.2.0. Incorpora la doctrina de corrección conservadora: principio rector,
-umbrales de rojo y azul, variedades del español y tratamiento, oralidad que no se
-normaliza, protocolo de investigación con fuentes e impresión como lector.
+Plugin `pubia` en la versión 0.3.0 (marketplace en `VERSION`). La 0.2.0 incorporó la
+doctrina de corrección conservadora: principio rector, umbrales de rojo y azul,
+variedades del español y tratamiento, oralidad que no se normaliza, protocolo de
+investigación con fuentes e impresión como lector. La 0.3.0 la afina y la hace
+cumplir en el código: tres niveles (rojo solo para lo crucial, azul para lo que obliga
+a detenerse y violeta para las sugerencias opcionales), cada uno con su lista cerrada
+de categorías; el filtro de capítulo ya no confunde el 1 con el 12; la carpeta de
+sincronización se da una vez y es la fuente estándar; la investigación compartida se
+lee además de escribirse; y el contexto se carga a la medida de la pregunta, con las
+novelas largas por tramos.
 
 Probado de extremo a extremo con dos capítulos de prueba, uno peninsular y uno de
 variedad puertorriqueña: extracción desde carpeta de sincronización (RTF y TXT),

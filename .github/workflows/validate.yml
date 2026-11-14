@@ -18,7 +18,9 @@ jobs:
           python-version: '3.12'
 
       - name: Dependencias de los scripts del plugin
-        run: pip install --quiet python-docx>=1.2.0 striprtf>=0.0.26
+        # Entre comillas: sin ellas el shell lee `>=1.2.0` como una redireccion,
+        # instala la ultima version sin minimo y deja un fichero `=1.2.0`.
+        run: pip install --quiet 'python-docx>=1.2.0' 'striprtf>=0.0.26'
 
       # La version global se olvida sola. Si el plugin cambia de version y
       # VERSION no, el release saldria sin reflejar el cambio (o no saldria).
