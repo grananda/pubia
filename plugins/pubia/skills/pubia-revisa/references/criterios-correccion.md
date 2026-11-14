@@ -29,15 +29,17 @@ comprobada, ambigüedad real, lógica narrativa. No llenar el documento de
 advertencias del tipo «puede funcionar si es deliberado»: si funciona
 razonablemente en su contexto, no se comenta.
 
-**Violeta** (sugerencia opcional): un problema **concreto de lectura** que el
-autor puede querer tocar o no: cacofonías, la misma palabra muy cerca sin función
-retórica, una frase que obliga a releer, un ritmo que tropieza. Se dice por qué,
-se ofrece una propuesta mínima si existe, y se acepta sin discusión que el autor
-la deje. Ver apartado 9.
+**Violeta** (sugerencia opcional): lo que el autor puede querer tocar o no:
+cacofonías, la misma palabra muy cerca sin función retórica, una frase que obliga
+a releer, un ritmo que tropieza, **una palabra que sonaría mejor o sería más
+precisa**. Se dice por qué, se ofrece una propuesta mínima, y se acepta sin
+discusión que el autor la deje. Ver apartado 9.
 
-**Nada**: la preferencia. Una palabra que suena mejor a quien revisa, un sinónimo
-más neutro, una frase reordenada, una metáfora «arreglada». **No se marca en
-ningún color.**
+**Nada**: lo que hace la voz del autor. La oralidad y el dialecto, el léxico
+regional e inventado, la rareza deliberada, la metáfora o la imagen atrevida, el
+lenguaje duro que es caracterización, y lo que ya está en `biblia/decisiones.md`.
+**No se marca en ningún color**, tampoco como sugerencia: «sonar mejor» a costa de
+eso es normalizar.
 
 ---
 
@@ -118,9 +120,9 @@ Cuando aparezca una forma oral nueva, no marcarla: anotarla para que
 - Inconsistencias **objetivas** de nombres, rangos o referentes ya establecidos:
   la grafía de un nombre, un cargo que cambia sin motivo, un referente imposible.
 
-Nunca en rojo: una mejora estilística discutible (eso, si acaso, es violeta), un
-sinónimo que suena mejor, una frase reordenada, una metáfora «arreglada» (eso no
-es nada).
+Nunca en rojo: una mejora estilística discutible, un sinónimo que suena mejor,
+una frase reordenada (todo eso, si acaso, es violeta), una metáfora «arreglada»
+(eso no es nada).
 
 ### Repertorio ortográfico y gramatical habitual
 
@@ -295,6 +297,11 @@ sugerencia que deja tal cual no es un rechazo: es una sugerencia descartada.
   seguidas.
 - **Ritmo** (`ritmo`): un tramo que se arrastra o se atropella sin que el pasaje
   lo pida.
+- **Léxico** (`lexico`): una palabra que sonaría mejor en ese contexto o que sería
+  más precisa (*miró* donde la escena pide *escrutó*, un término que choca con el
+  registro del narrador). Una palabra por otra, con el motivo; no una frase
+  reescrita. Nunca sobre oralidad, dialecto, léxico regional o inventado, ni sobre
+  una imagen deliberada: eso es la voz, y no se toca.
 
 ### Se dicen una sola vez, con recuento
 

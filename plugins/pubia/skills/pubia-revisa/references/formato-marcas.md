@@ -86,8 +86,8 @@ donde la variedad pide *ustedes*), `nombre` (grafía de un nombre, rango o
 referente ya establecido), `omision` (palabra omitida o duplicada), `paronimo`
 (*infligir/infringir*).
 
-`lexico` **no es categoría de ningún nivel**: cambiar una palabra por otra mejor
-es una preferencia, y las preferencias no se marcan.
+`lexico` **no es categoría de rojo**: cambiar una palabra por otra mejor es una
+preferencia, y las preferencias van en violeta, como sugerencia opcional.
 
 **Comentarios (azul, margen o cuerpo). Umbral alto, exigen detenerse:**
 `continuidad`, `cronologia`, `personaje`, `trama`, `historia` (anacronismo o
@@ -97,7 +97,8 @@ inexactitud **comprobada**), `incertidumbre` (las fuentes no concluyen),
 
 **Sugerencias (violeta). Opcionales, el autor las toma o las deja:**
 `cacofonia`, `repeticion` (misma palabra muy cerca, sin función retórica),
-`redaccion`, `ritmo`. El fragmento va en violeta con subrayado punteado, la
+`redaccion`, `ritmo`, `lexico` (una palabra que sonaría mejor o sería más precisa;
+nunca sobre oralidad, dialecto ni léxico de la novela). El fragmento va en violeta con subrayado punteado, la
 propuesta (si la hay) entre corchetes, y la `nota` al margen. Una categoría de
 sugerencia en un `comentario` se rechaza: lo opcional no va en azul.
 

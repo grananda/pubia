@@ -47,8 +47,8 @@ GRIS = RGBColor(0x59, 0x59, 0x59)
 TIPOS_CORRECCION = {"correccion", "supresion"}
 TIPOS = TIPOS_CORRECCION | {"comentario", "sugerencia"}
 
-# Rojo: solo lo objetivo y crucial. 'lexico' NO esta aqui ni en ninguna otra
-# lista: cambiar una palabra por otra mejor es una preferencia y no se marca.
+# Rojo: solo lo objetivo y crucial. 'lexico' NO esta aqui: cambiar una palabra
+# por otra mejor es una preferencia, y las preferencias van en violeta.
 CAT_CORRECCION = {
     "ortografia", "tilde", "puntuacion", "tipografia", "gramatica",
     "concordancia", "verbo", "preposicion", "dialogo", "numero",
@@ -63,13 +63,15 @@ CAT_COMENTARIO = {
     "verosimilitud", "voz", "punto-de-vista", "claridad", "duda",
     "ambiguedad", "logica", "incertidumbre",
 }
-# Violeta: opcional. Un problema concreto de lectura que el autor puede o no
-# querer tocar; nunca una palabra que simplemente guste mas.
+# Violeta: opcional. Lo que el autor puede o no querer tocar, incluida la
+# palabra que sonaria mejor. Nunca contra la voz, la oralidad o el lexico de la
+# novela: eso no se marca en ningun color.
 CAT_SUGERENCIA = {
     "cacofonia",   # sonidos que tropiezan, rimas y ecos involuntarios
     "repeticion",  # la misma palabra muy cerca, sin funcion retorica
     "redaccion",   # frase torpe, que obliga a releer
     "ritmo",       # frase o tramo que se arrastra o se atropella
+    "lexico",      # una palabra mas precisa o que suena mejor: opcion, no correccion
 }
 COLOR = {"correccion": ROJO, "supresion": ROJO, "comentario": AZUL, "sugerencia": VIOLETA}
 
@@ -134,12 +136,15 @@ def preparar(fuente: dict, marcas_json: dict, avisos: list[str],
         # rojo (correccion o supresion) tiene que ser de una categoria objetiva;
         # una categoria inventada o de criterio no entra, ni como aviso.
         if tipo in TIPOS_CORRECCION and categoria not in CAT_CORRECCION:
-            motivo = ("es una preferencia" if categoria in CAT_COMENTARIO or categoria == "estilo"
-                      else "no es una categoria objetiva conocida")
+            if categoria in CAT_SUGERENCIA or categoria == "estilo":
+                destino = "es una preferencia: va como sugerencia opcional (tipo 'sugerencia', violeta)"
+            elif categoria in CAT_COMENTARIO:
+                destino = "exige criterio: va como comentario (tipo 'comentario', azul)"
+            else:
+                destino = "no es una categoria objetiva conocida"
             errores.append(
-                f"{ref}: una {tipo} en rojo no puede ser de categoria '{categoria}': {motivo}. "
-                f"Lo que exige criterio es una preferencia: va como comentario (tipo 'comentario') "
-                f"o no va. Categorias de rojo: {', '.join(sorted(CAT_CORRECCION))}. "
+                f"{ref}: una {tipo} en rojo no puede ser de categoria '{categoria}': {destino}. "
+                f"Categorias de rojo: {', '.join(sorted(CAT_CORRECCION))}. "
                 f"Ver criterios-correccion.md, principio rector."
             )
             continue
@@ -149,7 +154,7 @@ def preparar(fuente: dict, marcas_json: dict, avisos: list[str],
                 f"sugerencia: {', '.join(sorted(CAT_SUGERENCIA))}. "
                 + ("Lo objetivo va en rojo (correccion); lo que exige detenerse, en azul (comentario)."
                    if categoria in CAT_CORRECCION | CAT_COMENTARIO else
-                   "Cambiar una palabra por otra mejor es una preferencia y no se marca.")
+                   "Si es cambiar una palabra por otra mejor, la categoria es 'lexico'.")
             )
             continue
         if tipo == "comentario" and categoria in CAT_SUGERENCIA:
@@ -459,9 +464,9 @@ def portada(doc: Document, fuente: dict, marcas_json: dict, agrupadas: dict, aut
         (", observaciones que merecen que te detengas: continuidad, verosimilitud histórica comprobada, "
          "ambigüedad real, lógica narrativa, caracterización. ", None, False),
         ("En violeta", VIOLETA, True),
-        (", sugerencias opcionales: cacofonías, repeticiones cercanas, redacción y ritmo. El fragmento va "
-         "subrayado en punteado y la propuesta, si la hay, entre corchetes; puedes tomarla o dejarla. "
-         "Nada de preferencias de vocabulario. Cada marca lleva un número que coincide con la tabla final.",
+        (", sugerencias opcionales: cacofonías, repeticiones cercanas, redacción, ritmo y la palabra que "
+         "podría sonar mejor. El fragmento va subrayado en punteado y la propuesta, si la hay, entre "
+         "corchetes; puedes tomarla o dejarla. Cada marca lleva un número que coincide con la tabla final.",
          None, False),
     ]:
         run = ley.add_run(texto)

@@ -19,9 +19,11 @@ imperativo:
   obliga a detenerse —continuidad, inexactitud histórica o médica **comprobada**,
   ambigüedad real, lógica narrativa, cambio involuntario de caracterización—.
 - **Violeta**, sugerencias **opcionales** que el autor toma o deja: cacofonías,
-  repeticiones muy cercanas, redacción que obliga a releer, ritmo.
+  repeticiones muy cercanas, redacción que obliga a releer, ritmo, la palabra que
+  sonaría mejor.
 
-La palabra que simplemente «suena mejor» no se marca nunca. El documento cierra con una sección de **impresión como lector**, que no
+Lo que hace la voz del autor —oralidad, dialecto, léxico regional e inventado, la
+imagen deliberada— no se marca en ningún color. El documento cierra con una sección de **impresión como lector**, que no
 forma parte de la corrección.
 
 Las correcciones las teclea el autor en Scrivener. PUBIA no escribe nunca en el
@@ -180,7 +182,7 @@ Dos scripts deterministas, para que el modelo decida *qué* marcar y no *cómo* 
   propuesta opcional entre corchetes, portada con recuento por categoría, tabla resumen y
   la sección final de impresión como lector. Es estricto: si un anclaje no resuelve,
   dos correcciones se solapan o una marca usa una categoría que no es de su nivel (criterio
-  en rojo, algo opcional en azul, una preferencia de vocabulario en cualquiera), no escribe
+  o preferencia en rojo, algo opcional en azul, una categoría inventada en cualquiera), no escribe
   nada y dice cuál falla. Opciones:
   `--comentarios margen|inline|ambos` (el modo `inline` reproduce el formato
   `COMENTARIO #n — sobre «frase exacta»: explicación` en cursiva dentro del cuerpo, azul o

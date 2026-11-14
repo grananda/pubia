@@ -193,13 +193,22 @@ with tempfile.TemporaryDirectory() as tmp:
                  "no es una categoria objetiva", t / "no5.docx")
 
     # Tercer nivel: lo opcional va en violeta y solo con sus categorias.
-    espera_fallo("violeta: una preferencia de vocabulario no es sugerencia",
+    # La palabra que suena mejor es violeta: se acepta como sugerencia...
+    espera_exito("violeta: la palabra que suena mejor es sugerencia",
+                 [str(ANOTA), "--fuente", str(fuente),
+                  "--marcas", str(marcas(t / "lx.json", [
+                      {"parrafo": 4, "tipo": "sugerencia", "buscar": "encerrar",
+                       "propuesta": "recluir", "categoria": "lexico",
+                       "nota": "Mas preciso para peones en un almacen."}])),
+                  "--salida", str(t / "lx.docx")])
+    # ...pero una categoria que no es de ningun nivel no se pinta.
+    espera_fallo("violeta: categoria inventada",
                  [str(ANOTA), "--fuente", str(fuente),
                   "--marcas", str(marcas(t / "sl.json", [
                       {"parrafo": 2, "tipo": "sugerencia", "buscar": "batey",
-                       "propuesta": "patio", "categoria": "lexico", "nota": "Suena mejor."}])),
+                       "propuesta": "patio", "categoria": "estilo", "nota": "Suena mejor."}])),
                   "--salida", str(t / "no6.docx")],
-                 "preferencia", t / "no6.docx")
+                 "no puede ser de categoria", t / "no6.docx")
     espera_fallo("violeta: lo opcional no va en azul",
                  [str(ANOTA), "--fuente", str(fuente),
                   "--marcas", str(marcas(t / "ca.json", [
