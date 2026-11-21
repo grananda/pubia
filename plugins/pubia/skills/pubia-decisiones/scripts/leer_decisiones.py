@@ -118,6 +118,9 @@ def main() -> int:
     ap.add_argument("--docx", help=".docx de la revision, si el autor relleno la columna Decision")
     ap.add_argument("--fuente", help="JSON de fuente con el que se genero la revision")
     ap.add_argument("--nueva-fuente", help="JSON de fuente re-extraido tras las correcciones manuales")
+    ap.add_argument("--decision", action="append", default=[], metavar="N=VALOR",
+                    help="Decision dicha por el autor en el chat, p. ej. '3=no, es la voz de Marta'. "
+                         "Repetible. Manda sobre la columna del .docx: es la palabra del autor mas reciente")
     ap.add_argument("--salida", help="Ruta de un JSON con el resultado")
     args = ap.parse_args()
 
@@ -129,6 +132,18 @@ def main() -> int:
         return 2
 
     anotadas = leer_tabla_docx(Path(args.docx)) if args.docx else {}
+    for bruta in args.decision:
+        n, sep, valor = bruta.partition("=")
+        if not sep or not n.strip().isdigit() or not valor.strip():
+            print(f"ERROR: --decision espera N=VALOR (p. ej. 3=no) y recibio {bruta!r}", file=sys.stderr)
+            return 2
+        anotadas[int(n)] = valor.strip()
+    if args.decision:
+        conocidas = {m["n"] for m in marcas}
+        sobran = sorted(n for n in anotadas if n not in conocidas)
+        if sobran:
+            print(f"ERROR: --decision sobre marcas que no existen en esta revision: {sobran}", file=sys.stderr)
+            return 2
 
     antes = despues = ""
     if args.nueva_fuente:
@@ -174,8 +189,8 @@ def main() -> int:
           f"aceptadas {sum(1 for f in filas if 'aceptada' in (f['decision_autor'], f['decision_inferida']))}  ·  "
           f"sugerencias descartadas {sum(1 for f in filas if f['decision_inferida'] == 'descartada')}")
     if not anotadas and not despues:
-        print("AVISO: sin --docx anotado ni --nueva-fuente no hay nada que deducir; "
-              "pasa al menos uno de los dos.")
+        print("AVISO: sin --docx anotado, --decision ni --nueva-fuente no hay nada que deducir; "
+              "pasa al menos uno.")
 
     if args.salida:
         ruta = Path(args.salida).expanduser()

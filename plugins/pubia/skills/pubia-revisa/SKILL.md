@@ -3,7 +3,7 @@ name: pubia-revisa
 description: PUBIA skill. Conservative review of a novel chapter via the command `pubia revisa`, delivering a .docx of suggestions that NEVER overwrites the manuscript. Governing principle: do not write for the author. It reads the chapter from the Scrivener sync folder, cross-checks it against the novel bible and emits a Word document in three tiers: red inline only for crucial objective errors (spelling, grammar, gender and number agreement, dialogue dashes, tratamiento, established names); blue margin comments for what demands a stop (continuity, verified historical inaccuracy, real ambiguity, narrative logic); violet optional suggestions the author may take or leave (cacophony, close repetition, clumsy wording, rhythm, a better-sounding word). It respects the author's voice and dialect, researches before claiming an anachronism, and closes with a frank "Impresion como lector". Use when the user says "revisa el capitulo 12", "corrige esta escena", "pasa el corrector", "pubia revisa", or similar.
 metadata:
   author: Julio Fernández
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # pubia-revisa (PUBIA)
@@ -43,9 +43,26 @@ The full doctrine is in `references/criterios-correccion.md`. **Read it before e
 
 - Read `pubia.json`. If it does not exist, stop and run `pubia setup` first. Note `variedad` (e.g. `es-PR`) and `epocas`: they decide what counts as an error and what counts as an anachronism. **`epocas` is a list**: a novel may span several periods, so there is no single "era of the novel" -- only the date of the scene you are reviewing.
 - Read the bible **selectively** (see *Scope the work to the question*). Always read in full the short files that are rules: `biblia/00-indice.md`, `lexico-y-estilo.md` and `decisiones.md`. From `personajes.md`, `lugares.md`, `tramas.md`, `cronologia.md` and `investigacion.md`, read the entries this chapter touches -- search (`Grep`) for the characters, places, objects and dates it names, plus the timeline around the scene's date -- rather than whole files; if a file is short, just read it. **Without the bible you cannot check continuity**; if it is missing or covers fewer chapters than exist, say so and offer `pubia biblia` first.
+- **Bring the bible up to date with everything before this chapter.** A review of chapter 12 against a bible that stops at 9 is blind exactly where continuity breaks most: in what was just written. Extract the whole manuscript and ask what is missing before this chapter:
+  ```
+  uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-revisa/scripts/leer_manuscrito.py \
+    --config pubia.json --salida biblia/.cache/manuscrito.json
+  uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-biblia/scripts/estado_biblia.py \
+    --manuscrito biblia/.cache/manuscrito.json --huellas biblia/huellas.json --antes-de "<cap>"
+  ```
+  `AL DIA`: go on. `ACTUALIZAR`: absorb those documents following the `pubia-biblia` workflow (`${CLAUDE_PLUGIN_ROOT}/skills/pubia-biblia/SKILL.md`), record them with `--marcar`, and tell the author in one line which ones. `PREGUNTAR`: too much to absorb silently -- ask, with the numbers it printed; if the author declines, review anyway and say in the report which chapters continuity was not checked against. **Never absorb the chapter under review here**: `--antes-de` leaves it out on purpose, because it still carries errors the author has not decided on. `pubia decisiones` absorbs it once corrected.
+- **Read what the previous revisions of this chapter already settled.** If `revisiones/<id>/` holds earlier versions, read each `<id>-vK.decisiones.json` (`pubia decisiones` writes them). If the latest one has none, the author has not closed it: say so and offer `pubia decisiones` first, since a review on top of an open one re-marks what the author already turned down. If they would rather go on, infer the state yourself without recording anything. Do it **before step 2**, which regenerates `<id>.fuente.json` -- the text vK was built on, and what the comparison needs:
+  ```
+  uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-revisa/scripts/leer_manuscrito.py \
+    --config pubia.json --filtro "<cap>" --salida revisiones/<id>/<id>.fuente-corregida.json
+  uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-decisiones/scripts/leer_decisiones.py \
+    --resueltas revisiones/<id>/<id>-vK.resueltas.json --fuente revisiones/<id>/<id>.fuente.json \
+    --nueva-fuente revisiones/<id>/<id>.fuente-corregida.json
+  ```
+  Then, in this review: **do not repeat a violet suggestion marked `descartada` or `rechazada`** while its passage is unchanged (same `buscar` still in the text) -- the author already saw it and left it. Anything rejected is in `decisiones.md` and is never re-marked. A red error still in the text with no recorded decision is marked again, with `nota` saying it was already marked in vK, so the author can reject it for good.
 - `lexico-y-estilo.md` lists the oral and dialect forms that are canon. They are not errors. `decisiones.md` lists what the author already rejected: re-marking it is the fastest way to make this tool useless.
 
-### 2. Extract the canonical text
+### 2. Extract the canonical text of the chapter
 
 ```
 uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-revisa/scripts/leer_manuscrito.py \
@@ -120,7 +137,7 @@ Version with `vN`: never overwrite a previous revision of the same chapter.
 
 ### 8. Report back
 
-Short and useful: where the `.docx` is, how many red corrections, blue comments and violet suggestions, the three or four findings that actually matter, what the bible should absorb (offer `pubia biblia`), and any contradiction you could not settle (offer `pubia continuidad`). Do not paste the mark list into chat; that is what the document is for.
+Short and useful: which chapters you absorbed into the bible before reviewing (if any), how many suggestions you left out because the author had already discarded them, where the `.docx` is, how many red corrections, blue comments and violet suggestions, the three or four findings that actually matter, what the bible should absorb (offer `pubia biblia`), and any contradiction you could not settle (offer `pubia continuidad`). Do not paste the mark list into chat; that is what the document is for.
 
 ## Scope the work to the question
 

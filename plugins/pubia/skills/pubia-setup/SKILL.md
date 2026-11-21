@@ -3,7 +3,7 @@ name: pubia-setup
 description: PUBIA skill. Prepares a novel's working folder for the rest of PUBIA via the command `pubia setup`: asks for the Scrivener sync folder, verifies it can actually read the draft, writes pubia.json (novel, author, language, era, paths, typographic conventions), creates the biblia/ and revisiones/ layout with the bible skeleton, adds a .gitignore, and explains step by step how to set up "Sync with External Folder" in Scrivener so the text flows out without copy-paste and nothing is ever written back into the project. It also states the read-only guarantee: PUBIA only writes inside biblia/ and revisiones/. Use when the user says "pubia setup", "configura la novela", "empezamos con una novela nueva", "donde pongo el manuscrito", or when another PUBIA skill finds no pubia.json.
 metadata:
   author: Julio Fernández
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # pubia-setup (PUBIA)
@@ -71,4 +71,4 @@ revisiones/
 2. Confirm that `uv` is available (the scripts declare their own dependencies and resolve them on the fly; nothing is installed globally).
 3. Tell the author the next step: `pubia biblia` to build the memory of what is already written, and then `pubia revisa cap N` for each new chapter.
 
-Do not run `pubia biblia` yourself unless asked; on a long novel it is a heavy read and the author should decide when.
+Do not run the first `pubia biblia` yourself unless asked; on a long novel it is a heavy read and the author should decide when. After that first build, the other skills keep it current: `pubia revisa` absorbs what is missing before the chapter it reviews, `pubia decisiones` absorbs the corrected chapter, and both ask first if the gap is large.

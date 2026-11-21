@@ -20,6 +20,7 @@ SK = ROOT / "plugins" / "pubia" / "skills"
 LEER = SK / "pubia-revisa" / "scripts" / "leer_manuscrito.py"
 ANOTA = SK / "pubia-revisa" / "scripts" / "anota_docx.py"
 DECIDE = SK / "pubia-decisiones" / "scripts" / "leer_decisiones.py"
+ESTADO = SK / "pubia-biblia" / "scripts" / "estado_biblia.py"
 
 CAPITULO = """# Capitulo 7 - El cafetal
 
@@ -303,6 +304,44 @@ with tempfile.TemporaryDirectory() as tmp:
                  [str(LEER), "--config", str(cfg2), "--salida", str(t / "nodraft.json")],
                  "Draft/", t / "nodraft.json")
 
+    # La biblia al dia antes de revisar: que falta antes del capitulo, sin
+    # contar el propio capitulo, y que ha cambiado desde que se absorbio.
+    bib = t / "bib"
+    (bib / "Draft").mkdir(parents=True)
+    for nombre, texto in (("01-Uno.txt", "Uno dos tres.\n"), ("02-Dos.txt", "Cuatro cinco.\n"),
+                          ("03-Tres.txt", "Seis siete ocho.\n")):
+        (bib / "Draft" / nombre).write_text(texto, encoding="utf-8")
+    man, hue = t / "bib.json", t / "huellas.json"
+
+    def estado(*extra: str) -> subprocess.CompletedProcess:
+        corre([str(LEER), "--fuente", str(bib), "--salida", str(man)])
+        return corre([str(ESTADO), "--manuscrito", str(man), "--huellas", str(hue), *extra])
+
+    pasos = []
+    r = estado("--antes-de", "3")
+    pasos.append(("biblia vacia: 2 pendientes antes del 3, el 3 fuera",
+                  r.stdout.strip().splitlines()[-1].startswith("ACTUALIZAR: 2 documento(s)")
+                  and "03-Tres" not in r.stdout))
+    r = estado("--antes-de", "3", "--umbral-palabras", "3")
+    pasos.append(("por encima del umbral se pregunta",
+                  r.stdout.strip().splitlines()[-1].startswith("PREGUNTAR")))
+    estado("--marcar", "1", "2")
+    r = estado("--antes-de", "3")
+    pasos.append(("tras --marcar esta al dia", r.stdout.strip().splitlines()[-1].startswith("AL DIA")))
+    (bib / "Draft" / "02-Dos.txt").write_text("Cuatro cinco, corregido.\n", encoding="utf-8")
+    r = estado("--antes-de", "3")
+    pasos.append(("un capitulo corregido se detecta como cambiado",
+                  "cambiado  02-Dos" in r.stdout and "ACTUALIZAR: 1 documento(s)" in r.stdout))
+    estado("--marcar", "3")
+    (bib / "Draft" / "03-Tres.txt").unlink()
+    r = estado()
+    pasos.append(("un capitulo absorbido y borrado se avisa", "AVISO     03-Tres.txt" in r.stdout))
+    malos = [n for n, ok in pasos if not ok]
+    if malos:
+        fallos.append(f"estado de la biblia: {malos}\n{r.stdout}{r.stderr}")
+    else:
+        hechas.append("estado de la biblia: pendientes antes del capitulo, umbral, marcar, cambios y borrados")
+
     # Ciclo de decisiones: el autor aplica una correccion y rechaza otra.
     corregido = (t / "sync" / "Draft" / "07-El-cafetal.txt")
     corregido.write_text(CAPITULO.replace("habia dio", "habia dado"), encoding="utf-8")
@@ -329,6 +368,17 @@ with tempfile.TemporaryDirectory() as tmp:
             else:
                 hechas.append("deduccion: 1 aceptada, 2 rechazadas, 1 sugerencia descartada y "
                               "2 sin cambios, desde el manuscrito corregido")
+            # Lo dicho en el chat entra en el mismo JSON y manda sobre lo demas.
+            r = corre([str(DECIDE), "--resueltas", str(sidecar), "--decision", "4=no, es su voz",
+                       "--salida", str(t / "dec-chat.json")])
+            fila = next((d for d in json.loads((t / "dec-chat.json").read_text(encoding="utf-8"))
+                         ["decisiones"] if d["n"] == 4), {}) if r.returncode == 0 else {}
+            if fila.get("decision_autor") != "rechazada" or fila.get("nota_autor") != "no, es su voz":
+                fallos.append(f"decisiones: --decision no queda en el JSON ({fila})\n{r.stderr}")
+            elif corre([str(DECIDE), "--resueltas", str(sidecar), "--decision", "99=no"]).returncode == 0:
+                fallos.append("decisiones: --decision acepta una marca que no existe")
+            else:
+                hechas.append("decisiones dichas en el chat: entran en el JSON y se validan")
 
 if fallos:
     print("El pipeline tiene problemas:", file=sys.stderr)
