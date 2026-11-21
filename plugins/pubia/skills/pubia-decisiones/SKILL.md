@@ -3,7 +3,7 @@ name: pubia-decisiones
 description: PUBIA skill. Closes the loop of a revision via the command `pubia decisiones`: finds out which suggestions the author accepted and which they rejected, and records the rejections in biblia/decisiones.md so the corrector never marks them again. It reads the Decision column of the revision .docx if the author filled it in in Word, and/or re-extracts the manuscript after the manual corrections and deduces mark by mark whether the original text is still there or the proposal already made it in. The author can also just say it in chat ("rechazo la 2 y la 3"). Rejections become permanent rules, with their reason, so that recurring decisions about voice and style stop being re-litigated on every pass. Use when the user says "pubia decisiones", "ya he corregido el capitulo", "rechazo estas sugerencias", "apunta que esto no se toca", "esto es intencionado", or similar.
 metadata:
   author: Julio Fernández
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # pubia-decisiones (PUBIA)
@@ -32,6 +32,8 @@ When the author explains an intention that resolves a comment you raised -- in c
 2. **The Decision column of the `.docx`.** If the author filled it in in Word and saved the file, read it. Free text is fine: `no, el enfado es la mirada de Marta` counts as a rejection with its reason.
 3. **The corrected manuscript.** Re-sync Scrivener, re-extract, and deduce what was applied.
 
+Whatever the sources, **always write `<id>-vN.decisiones.json`**: it is how the next `pubia revisa` of this chapter knows the revision is closed and what not to repeat. Combine all three in one run; what the author said in chat goes in with `--decision` (repeatable, and it wins over the `.docx` column):
+
 ```
 # re-extraer el capitulo ya corregido
 uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-revisa/scripts/leer_manuscrito.py \
@@ -44,8 +46,11 @@ uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-decisiones/scripts/leer_decisiones.py 
   --docx revisiones/cap-12/cap-12-v1.docx \
   --fuente revisiones/cap-12/cap-12.fuente.json \
   --nueva-fuente revisiones/cap-12/cap-12.fuente-corregida.json \
+  --decision "2=no" --decision "3=no, es la voz de Marta" \
   --salida revisiones/cap-12/cap-12-v1.decisiones.json
 ```
+
+Drop the options you do not have (`--docx` if the column is empty, the re-extraction if the author has not corrected yet), but keep `--resueltas` and `--salida`.
 
 `--resueltas` is the sidecar that `anota_docx.py` wrote next to the `.docx`; it carries the `#n` numbering the author sees, so never renumber by hand.
 
@@ -65,6 +70,19 @@ In `biblia/decisiones.md`:
 
 If a rejection reveals something about the novel's canon (an invented word, a typographic convention, a trait), also send it to the right bible file — or tell the author that `pubia biblia` should absorb it.
 
+## Then: the corrected chapter goes into the bible
+
+Once the decisions are recorded, the chapter is in the state the author chose, and that is what the bible must hold. Absorb it following the `pubia-biblia` workflow (`${CLAUDE_PLUGIN_ROOT}/skills/pubia-biblia/SKILL.md`), only this chapter, and record it:
+
+```
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-revisa/scripts/leer_manuscrito.py \
+  --config pubia.json --salida biblia/.cache/manuscrito.json
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-biblia/scripts/estado_biblia.py \
+  --manuscrito biblia/.cache/manuscrito.json --huellas biblia/huellas.json --marcar "<cap>"
+```
+
+It is one chapter, so do it without asking, and say so in the report. If the author has not corrected the chapter yet (decisions given only in chat, manuscript unchanged), still absorb it: the bible should not lag behind what is written. If they correct it later, its fingerprint changes and the next review re-absorbs it.
+
 ## Report back
 
-Short: how many accepted, how many rejected, which new permanent rules you wrote, and anything you could not classify and need the author to settle. If the rejection rate is high in one category, say so: the corrector is miscalibrated in that dimension and should ease off next pass. The same goes for violet: if most suggestions are discarded, the next review should raise the bar.
+Short: how many accepted, how many rejected, how many violet suggestions discarded (they will not come back while the passage stays the same), that the chapter is now in the bible, which new permanent rules you wrote, and anything you could not classify and need the author to settle. If the rejection rate is high in one category, say so: the corrector is miscalibrated in that dimension and should ease off next pass. The same goes for violet: if most suggestions are discarded, the next review should raise the bar.

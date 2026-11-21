@@ -255,7 +255,7 @@ número que todavía no tiene etiqueta, así que es idempotente.
 
 ## Estado
 
-Plugin `pubia` en la versión 0.3.0 (marketplace en `VERSION`). La 0.2.0 incorporó la
+Plugin `pubia` en la versión 0.3.1 (marketplace en `VERSION`). La 0.2.0 incorporó la
 doctrina de corrección conservadora: principio rector, umbrales de rojo y azul,
 variedades del español y tratamiento, oralidad que no se normaliza, protocolo de
 investigación con fuentes e impresión como lector. La 0.3.0 la afina y la hace
@@ -264,7 +264,10 @@ a detenerse y violeta para las sugerencias opcionales), cada uno con su lista ce
 de categorías; el filtro de capítulo ya no confunde el 1 con el 12; la carpeta de
 sincronización se da una vez y es la fuente estándar; la investigación compartida se
 lee además de escribirse; y el contexto se carga a la medida de la pregunta, con las
-novelas largas por tramos.
+novelas largas por tramos. La 0.3.1 mantiene la biblia al día sola: antes de revisar un
+capítulo absorbe lo anterior que falte (y pregunta si es mucho), al cerrar las decisiones
+absorbe el capítulo ya corregido, y una revisión nueva no repite las sugerencias que ya
+descartaste.
 
 Probado de extremo a extremo con dos capítulos de prueba, uno peninsular y uno de
 variedad puertorriqueña: extracción desde carpeta de sincronización (RTF y TXT),

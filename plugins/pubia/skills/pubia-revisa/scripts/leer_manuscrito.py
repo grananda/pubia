@@ -199,6 +199,8 @@ def main() -> int:
         return 2
 
     ficheros = recoger_ficheros(fuente, args.filtro, args.borrador)
+    raiz = (fuente.parent if fuente.is_file()
+            else fuente / args.borrador if (fuente / args.borrador).is_dir() else fuente)
     if not ficheros:
         print(f"ERROR: ningun fichero de texto en {fuente}" + (f" con filtro '{args.filtro}'" if args.filtro else ""),
               file=sys.stderr)
@@ -211,6 +213,9 @@ def main() -> int:
     for ruta in ficheros:
         texto = leer_fichero(ruta)
         sha.update(texto.encode("utf-8", errors="replace"))
+        # Huella por documento: es la que permite a la biblia saber que
+        # capitulos ha absorbido ya y cuales han cambiado desde entonces.
+        sha_doc = hashlib.sha256(texto.encode("utf-8", errors="replace")).hexdigest()
         trozos = trocear(texto, args.parrafos)
         primero = siguiente
         for trozo in trozos:
@@ -224,7 +229,9 @@ def main() -> int:
             siguiente += 1
         documentos.append({
             "fichero": str(ruta),
+            "ruta": str(ruta.relative_to(raiz)) if ruta.is_relative_to(raiz) else ruta.name,
             "nombre": ruta.stem,
+            "sha256": sha_doc,
             "parrafos": [primero, siguiente - 1] if siguiente > primero else [],
             "palabras": sum(p["palabras"] for p in parrafos[primero - 1:siguiente - 1]),
         })

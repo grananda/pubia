@@ -15,9 +15,12 @@ hasta que el autor lo confirme.
 - Capítulos absorbidos: 1-14
 - Fuente: <ruta de sincronización de Scrivener>
 
-| Documento | Huella | Absorbido |
-|---|---|---|
-| 12-El-regreso | 891b08e1a11e939b | 2026-11-09 |
+| Documento | Absorbido |
+|---|---|
+| 12-El-regreso | 2026-11-09 |
+
+Las huellas de cada documento no van aquí: las guarda `estado_biblia.py` en
+`biblia/huellas.json`, que no se edita a mano.
 
 ## La novela en diez líneas
 <sinopsis real, no promocional: qué pasa, quién lo provoca, cómo acaba lo que ya está escrito>
