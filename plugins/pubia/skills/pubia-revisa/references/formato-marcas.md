@@ -81,7 +81,8 @@ dice **dónde** y **qué** anotar.
 
 **Correcciones (rojo, en línea). Solo lo objetivo:**
 `ortografia`, `tilde`, `puntuacion`, `tipografia`, `gramatica`, `concordancia`,
-`verbo`, `preposicion`, `dialogo`, `numero`, `tratamiento` (fuga de *vosotros*
+`verbo`, `preposicion`, `conjuncion` (*y/e*, *o/u*, *sino/si no*, correlaciones),
+`dialogo`, `numero`, `tratamiento` (fuga de *vosotros*
 donde la variedad pide *ustedes*), `nombre` (grafía de un nombre, rango o
 referente ya establecido), `omision` (palabra omitida o duplicada), `paronimo`
 (*infligir/infringir*).

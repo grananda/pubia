@@ -111,9 +111,11 @@ Cuando aparezca una forma oral nueva, no marcarla: anotarla para que
 - Ortografía y tildes (incluidas las diacríticas: *sólo* → *solo*, *éste* → *este*).
 - Errores tipográficos y palabras omitidas o duplicadas por accidente.
 - Concordancia de género, número y persona.
-- Régimen preposicional inequívocamente incorrecto.
-- Puntuación normativa cuando hay error claro, y puntuación de diálogos.
-- Vocativos sin coma.
+- **Puntuación** normativa cuando hay error claro, incluida la de los diálogos
+  (repertorio abajo).
+- **Preposiciones**: régimen inequívocamente incorrecto, preposición que falta o
+  sobra (repertorio abajo).
+- **Conjunciones**: forma, elección y correlación erróneas (repertorio abajo).
 - Tiempos y formas verbales erróneas (*había dió* → *había dado*, *si tendría*).
 - Parónimos confundidos (*infligir/infringir*, *adoptar/adaptar*).
 - Fuga de tratamiento (apartado 1).
@@ -140,6 +142,64 @@ apertura (`—No vendrá`); verbo de habla en minúscula tras la raya de cierre;
 raya de cierre solo si sigue narración; con verbo de habla, la puntuación va
 después de la raya (`—No vendrá —dijo—. Nunca lo hace.`); si el inciso no es de
 habla, el parlamento se puntúa antes (`—No vendrá. —Cerró la puerta.`).
+
+**Puntuación.** Se revisa frase a frase, en su propia pasada: es donde más
+errores se escapan cuando se lee por el sentido.
+
+- Rojo:
+  - Coma entre sujeto y verbo (*Los peones del cafetal, se fueron*), y entre verbo
+    y complemento directo.
+  - Vocativo sin coma (*Ven aquí Marta* → *Ven aquí, Marta*), también en diálogo.
+  - Inciso abierto y no cerrado: la coma, la raya o el paréntesis de cierre que
+    falta (*Tomás, el mayordomo dio la orden* cuando el mayordomo es el inciso).
+  - Coma tras un conector que la pide (*sin embargo, no obstante, es decir, por
+    tanto, por último*) y delante de *pero, aunque, sino* cuando unen oraciones.
+  - Signos de apertura que faltan (*Vendrás?* → *¿Vendrás?*) y apertura y cierre
+    que no casan.
+  - Puntos suspensivos: tres, ni dos ni cuatro; sin punto añadido detrás.
+  - Punto tras comillas, paréntesis o raya de cierre, no antes (*«no».*); sin
+    punto tras signos de interrogación o exclamación.
+  - Mayúscula indebida tras punto y coma, o tras dos puntos salvo cita o
+    encabezamiento; minúscula tras punto.
+- Violeta (`redaccion`), solo si dificulta la lectura: una frase larga en la que
+  una coma, un punto y coma o un punto evitarían releer; una coma opcional cuya
+  ausencia cambia el sentido a primera vista.
+- Nada: la puntuación como estilo. Frases largas encadenadas con comas, el
+  polisíndeton, la yuxtaposición, el punto que corta en seco, la ausencia de comas
+  opcionales: si el texto se entiende y es coherente en el autor, es voz.
+
+**Preposiciones.** Rojo cuando el régimen es inequívocamente incorrecto o la
+preposición falta o sobra:
+
+- Régimen: *en base a* → *a partir de, basándose en*; *bajo el punto de vista* →
+  *desde*; *a nivel de* cuando no hay niveles; *contra más* → *cuanto más*; *detrás
+  mío* → *detrás de mí*; *sentarse en la mesa* cuando es para comer (*a la mesa*).
+- La que falta o sobra: *me acuerdo que* → *me acuerdo de que*; *estoy seguro que*
+  → *de que*; *pienso de que* → *pienso que* (con el dequeísmo y el queísmo, abajo);
+  *a* ante complemento directo de persona (*vi Marta* → *vi a Marta*) y no ante
+  cosa.
+- *Por / para* y *a / en* solo cuando cambian el sentido o la norma no deja duda.
+- **Variedad primero.** Muchos usos que en España serían raros son norma en
+  América y no se marcan: *entrar a*, *en la mañana*, *de acuerdo a*, *hasta* con
+  valor de inicio en México (*abren hasta las diez*), *recién* + verbo. Si la
+  biblia o `variedad` los cubren, son canon.
+
+**Conjunciones.** Rojo cuando la forma, la elección o la correlación son erróneas:
+
+- Forma: *y* → *e* ante *i-*, *hi-* (*padre e hijo*; pero *y hierba*, *y hielo*,
+  donde suena diptongo); *o* → *u* ante *o-*, *ho-* (*siete u ocho*); *o* entre
+  cifras sin tilde (*3 o 4*).
+- Elección: *sino* tras negación que se corrige (*no es rojo sino azul*) frente a
+  *pero*, que no corrige; *sino / si no*; *porque / por qué / porqué / por que*;
+  *conque / con que / con qué*.
+- Correlación: *ni… ni* (no *ni… o*); *tanto… como* (no *tanto… y*); *no solo…
+  sino también*; *más… que* frente a *más… de* con cantidades.
+- *Que*: dequeísmo, queísmo y *que* galicado (*fue allí que lo vi* → *donde*);
+  *que* sobrante tras interrogativo indirecto.
+- Violeta (`repeticion` o `redaccion`): la misma conjunción encadenada sin función
+  (*y… y… y…* cuando no es polisíndeton buscado), o *que* tras *que* que obliga a
+  releer.
+- Nada: el polisíndeton y la asíndeton deliberados.
 
 **Gramática**: dequeísmo y queísmo; concordancia a distancia y con colectivos;
 leísmo de cosa, laísmo, *le* invariable con plural; gerundio de posterioridad y
