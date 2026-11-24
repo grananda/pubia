@@ -193,6 +193,15 @@ with tempfile.TemporaryDirectory() as tmp:
                   "--salida", str(t / "no5.docx")],
                  "no es una categoria objetiva", t / "no5.docx")
 
+    # Las conjunciones tienen su categoria de rojo: *y* ante *i-* es *e*.
+    espera_exito("rojo: conjuncion",
+                 [str(ANOTA), "--fuente", str(fuente),
+                  "--marcas", str(marcas(t / "cj.json", [
+                      {"parrafo": 4, "tipo": "correccion", "buscar": "encerrar a",
+                       "propuesta": "encerrar a", "categoria": "conjuncion",
+                       "nota": "Prueba de categoria."}])),
+                  "--salida", str(t / "cj.docx")])
+
     # Tercer nivel: lo opcional va en violeta y solo con sus categorias.
     # La palabra que suena mejor es violeta: se acepta como sugerencia...
     espera_exito("violeta: la palabra que suena mejor es sugerencia",

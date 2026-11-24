@@ -3,7 +3,7 @@ name: pubia-revisa
 description: PUBIA skill. Conservative review of a novel chapter via the command `pubia revisa`, delivering a .docx of suggestions that NEVER overwrites the manuscript. Governing principle: do not write for the author. It reads the chapter from the Scrivener sync folder, cross-checks it against the novel bible and emits a Word document in three tiers: red inline only for crucial objective errors (spelling, grammar, gender and number agreement, dialogue dashes, tratamiento, established names); blue margin comments for what demands a stop (continuity, verified historical inaccuracy, real ambiguity, narrative logic); violet optional suggestions the author may take or leave (cacophony, close repetition, clumsy wording, rhythm, a better-sounding word). It respects the author's voice and dialect, researches before claiming an anachronism, and closes with a frank "Impresion como lector". Use when the user says "revisa el capitulo 12", "corrige esta escena", "pasa el corrector", "pubia revisa", or similar.
 metadata:
   author: Julio Fernández
-  version: "0.3.1"
+  version: "0.3.2"
 ---
 
 # pubia-revisa (PUBIA)
@@ -78,12 +78,13 @@ uv run ${CLAUDE_PLUGIN_ROOT}/skills/pubia-revisa/scripts/leer_manuscrito.py \
 One pass per lens over the whole chapter. Reading once and marking everything at the same time misses most of it.
 
 1. **Variedad y tratamiento** -- vosotros forms leaking into dialogue that must use ustedes, with their false positives (first person plural, peninsular characters). Red.
-2. **Ortografia, tipografia y puntuacion** -- including dialogue dashes and dialogue punctuation. Red.
-3. **Gramatica** -- agreement, prepositional regime, verb forms, gerunds, anacoluthon. Red when unambiguous, blue when it changes the meaning and is arguable.
-4. **Continuidad contra la biblia** -- names, ages, dates, traits, objects, places, and above all the knowledge state: who knows what and since when. Blue (red only for an established spelling).
-5. **Historia, medicina, ciencia y tecnica** -- date the scene first, then research (step 4 below), then classify. Blue.
-6. **Narrativa y caracterizacion** -- real ambiguity, unidentifiable referents, narrative logic, point-of-view breaks, unintended characterization shifts. Blue, and only when the threshold is met.
-7. **Lectura en voz alta** -- cacophony, close repetition, sentences that make you re-read, stumbling rhythm. Violet, instance by instance only when it clearly grates; systemic patterns (comodin verbs, narrative filters, *-mente* adverbs) as one violet suggestion with a count.
+2. **Ortografia y tipografia** -- spelling, accents, dialogue dashes. Red.
+3. **Puntuacion** -- its own pass, sentence by sentence, because it is what slips through when you read for meaning: commas between subject and verb, vocatives, unclosed asides, connectors, opening `¿ ¡`, ellipsis, punctuation around quotes and dashes, dialogue punctuation. Red when normative; violet (`redaccion`) only when an optional mark would spare a re-read; punctuation as style (long comma-chained sentences, polysyndeton) is voice.
+4. **Gramatica, preposiciones y conjunciones** -- agreement, verb forms, gerunds, anacoluthon; prepositional regime and missing or extra prepositions (variety first: *entrar a*, *en la mañana* are norm in the Americas); conjunction form (*e* before *i-*, *u* before *o-*), choice (*sino / pero*, *sino / si no*, *porque / por que*) and correlation (*ni... ni*, *tanto... como*), dequeismo and queismo. Red when unambiguous, blue when it changes the meaning and is arguable.
+5. **Continuidad contra la biblia** -- names, ages, dates, traits, objects, places, and above all the knowledge state: who knows what and since when. Blue (red only for an established spelling).
+6. **Historia, medicina, ciencia y tecnica** -- date the scene first, then research (step 4 below), then classify. Blue.
+7. **Narrativa y caracterizacion** -- real ambiguity, unidentifiable referents, narrative logic, point-of-view breaks, unintended characterization shifts. Blue, and only when the threshold is met.
+8. **Lectura en voz alta** -- cacophony, close repetition, sentences that make you re-read, stumbling rhythm. Violet, instance by instance only when it clearly grates; systemic patterns (comodin verbs, narrative filters, *-mente* adverbs) as one violet suggestion with a count.
 
 Keep a running note of what should change in the bible and of any contradiction you cannot settle; you report both at the end.
 

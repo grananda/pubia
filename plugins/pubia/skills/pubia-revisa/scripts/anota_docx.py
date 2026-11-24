@@ -51,7 +51,7 @@ TIPOS = TIPOS_CORRECCION | {"comentario", "sugerencia"}
 # por otra mejor es una preferencia, y las preferencias van en violeta.
 CAT_CORRECCION = {
     "ortografia", "tilde", "puntuacion", "tipografia", "gramatica",
-    "concordancia", "verbo", "preposicion", "dialogo", "numero",
+    "concordancia", "verbo", "preposicion", "conjuncion", "dialogo", "numero",
     "tratamiento",   # fuga de vosotros donde la variedad pide ustedes
     "nombre",        # grafia de un nombre, rango o referente ya establecido
     "omision",       # palabra omitida o duplicada por accidente
