@@ -130,6 +130,17 @@ fichero: son las que impiden juzgar un anacronismo.
 
 ## Promesas cumplidas
 - <hilo> → resuelto en cap. N.
+
+## Lo que el lector ya sabe
+Lo que el texto ya le ha contado o explicado al lector, para que `pubia revisa`
+detecte cuándo se vuelve a contar. No es lo que saben los personajes (eso está en
+`personajes.md`): es lo que el lector ya ha leído.
+
+| Qué | Dónde se cuenta | Cómo |
+|---|---|---|
+| Tomás no se fía del mayordomo y por qué | cap. 4, párr. 12 | narrador |
+| Cómo funciona el secadero del cafetal | cap. 2 | diálogo de Esteban |
+| Marta perdió a su madre en el 68 | cap. 1; se recuerda en cap. 9 | narrador; recuerdo |
 ```
 
 ---

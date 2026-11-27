@@ -3,7 +3,7 @@ name: pubia-revisa
 description: PUBIA skill. Conservative review of a novel chapter via the command `pubia revisa`, delivering a .docx of suggestions that NEVER overwrites the manuscript. Governing principle: do not write for the author. It reads the chapter from the Scrivener sync folder, cross-checks it against the novel bible and emits a Word document in three tiers: red inline only for crucial objective errors (spelling, grammar, gender and number agreement, dialogue dashes, tratamiento, established names); blue margin comments for what demands a stop (continuity, verified historical inaccuracy, real ambiguity, narrative logic); violet optional suggestions the author may take or leave (cacophony, close repetition, clumsy wording, rhythm, a better-sounding word). It respects the author's voice and dialect, researches before claiming an anachronism, and closes with a frank "Impresion como lector". Use when the user says "revisa el capitulo 12", "corrige esta escena", "pasa el corrector", "pubia revisa", or similar.
 metadata:
   author: Julio Fernández
-  version: "0.3.2"
+  version: "0.3.3"
 ---
 
 # pubia-revisa (PUBIA)
@@ -34,7 +34,7 @@ The full doctrine is in `references/criterios-correccion.md`. **Read it before e
 2. **Three tiers, decided in this order.** For each finding ask, in order, and stop at the first yes:
    - **Red (`correccion` / `supresion`) -- does a norm or an established fact settle it?** Only the crucial and objective: spelling and accents, grammar, gender/number/person agreement, dialogue dashes and dialogue punctuation, verb forms, prepositional regime, confused paronyms, tratamiento leaks, the spelling of an already-established name, a word duplicated by accident. If it takes judgement, it is not red.
    - **Blue (`comentario`) -- must the author stop here?** Real ambiguity, contradiction with established facts, continuity, verified anachronism or inaccuracy, broken narrative logic, unintended characterization shift. High threshold; never "this may work if deliberate" notes.
-   - **Violet (`sugerencia`) -- is there something the author may or may not want to change?** Cacophony and unintended rhyme, the same word repeated very close with no rhetorical function, a sentence that makes you re-read, a stretch whose rhythm stumbles, a word that would sound better or be more precise (`lexico`). Optional by definition: say why in `nota`, offer a minimal `propuesta`, and never insist.
+   - **Violet (`sugerencia`) -- is there something the author may or may not want to change?** Cacophony and unintended rhyme, the same word repeated very close with no rhetorical function, a sentence that makes you re-read, a stretch whose rhythm stumbles, a word that would sound better or be more precise (`lexico`), an idea or fact told again (`reiteracion`), something explained that was already shown (`sobreexplicacion`). Optional by definition: say why in `nota`, offer a minimal `propuesta`, and never insist.
    - **Otherwise, nothing.** What makes the author's voice is never marked in any colour: orality and dialect, regional and invented lexicon, deliberate strangeness, a bold metaphor or image, harsh language that is characterization, and anything already settled in `decisiones.md`. A better-sounding word that would flatten any of those is not a suggestion, it is normalization.
 
 ## Workflow
@@ -85,8 +85,9 @@ One pass per lens over the whole chapter. Reading once and marking everything at
 6. **Historia, medicina, ciencia y tecnica** -- date the scene first, then research (step 4 below), then classify. Blue.
 7. **Narrativa y caracterizacion** -- real ambiguity, unidentifiable referents, narrative logic, point-of-view breaks, unintended characterization shifts. Blue, and only when the threshold is met.
 8. **Lectura en voz alta** -- cacophony, close repetition, sentences that make you re-read, stumbling rhythm. Violet, instance by instance only when it clearly grates; systemic patterns (comodin verbs, narrative filters, *-mente* adverbs) as one violet suggestion with a count.
+9. **Reiteracion y sobreexplicacion** -- the author wants **all** of these flagged, to weigh them at the end. Reiteration: an idea, a fact or an explanation the text already gave, earlier in this chapter or in an earlier one (check *Lo que el lector ya sabe* in `biblia/tramas.md`, and grep the bible for the fact); `nota` says where it was said before, with a short quote. Over-explanation: an emotion named right after it was shown, the subtext of a dialogue spelled out, a tag that explains the tone the line already carries, a motive justified twice, a metaphor explained, characters telling each other what both know so the reader hears it; `nota` says what already showed it. Violet, one by one, never folded into a count. When in doubt, flag it: the author filters.
 
-Keep a running note of what should change in the bible and of any contradiction you cannot settle; you report both at the end.
+Keep a running note of what this chapter explains to the reader for the first time (it goes to *Lo que el lector ya sabe*, so the next chapters can be checked against it), of what should change in the bible and of any contradiction you cannot settle; you report both at the end.
 
 ### 4. Date the scene, then research
 
@@ -107,10 +108,10 @@ When a date, institution, office, illness, treatment, technology or period expre
 
 Write `revisiones/<id>/<id>-vN.marcas.json` following `references/formato-marcas.md`.
 
-- **Each tier has a closed list of categories**, and the script rejects a mark outside its list. Red (`correccion`, `supresion`): the objective ones. Violet (`sugerencia`): `cacofonia`, `repeticion`, `redaccion`, `ritmo`, `lexico`. Blue (`comentario`): the rest of the editorial ones. Deleting a duplicated word is red (`omision`); deleting a clause because it is redundant is a violet `redaccion` suggestion, never a red deletion.
+- **Each tier has a closed list of categories**, and the script rejects a mark outside its list. Red (`correccion`, `supresion`): the objective ones. Violet (`sugerencia`): `cacofonia`, `repeticion`, `redaccion`, `ritmo`, `lexico`, `reiteracion`, `sobreexplicacion`. Blue (`comentario`): the rest of the editorial ones. Deleting a duplicated word is red (`omision`); deleting a clause because it is redundant is a violet `redaccion` suggestion, never a red deletion.
 - **Minimal anchor.** `buscar` is the shortest literal span that identifies the problem, copied exactly from the source JSON; add `ocurrencia` when it repeats. The script is strict and names any anchor that fails.
 - **A reason always.** Every correction that is not a plain typo carries `nota`; every comment explains why and, where relevant, cites the bible chapter that contradicts it or the source that settles it.
-- **Proportion.** Order of importance: continuity and plot > verified history > grammar and tratamiento > violet suggestions. Red has no quota: an error is an error. Violet does: past roughly 5 suggestions per thousand words, keep the ones that grate most and fold the rest into one systemic suggestion with a count; a document full of violet buries the red and the blue.
+- **Proportion.** Order of importance: continuity and plot > verified history > grammar and tratamiento > violet suggestions. Red has no quota: an error is an error. Violet does: past roughly 5 suggestions per thousand words, keep the ones that grate most and fold the rest into one systemic suggestion with a count; a document full of violet buries the red and the blue. **Except `reiteracion` and `sobreexplicacion`**: no cap, no folding, every one flagged.
 - **One praise, at most.** If a passage works, one comment on it. The rest goes in the reader's impression.
 
 ### 6. Write the reader's impression
@@ -138,7 +139,7 @@ Version with `vN`: never overwrite a previous revision of the same chapter.
 
 ### 8. Report back
 
-Short and useful: which chapters you absorbed into the bible before reviewing (if any), how many suggestions you left out because the author had already discarded them, where the `.docx` is, how many red corrections, blue comments and violet suggestions, the three or four findings that actually matter, what the bible should absorb (offer `pubia biblia`), and any contradiction you could not settle (offer `pubia continuidad`). Do not paste the mark list into chat; that is what the document is for.
+Short and useful: which chapters you absorbed into the bible before reviewing (if any), how many suggestions you left out because the author had already discarded them, where the `.docx` is, how many red corrections, blue comments and violet suggestions (with reiterations and over-explanations counted apart, since the author reviews them as a block), the three or four findings that actually matter, what the bible should absorb (offer `pubia biblia`), and any contradiction you could not settle (offer `pubia continuidad`). Do not paste the mark list into chat; that is what the document is for.
 
 ## Scope the work to the question
 

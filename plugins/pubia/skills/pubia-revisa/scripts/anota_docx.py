@@ -72,6 +72,8 @@ CAT_SUGERENCIA = {
     "redaccion",   # frase torpe, que obliga a releer
     "ritmo",       # frase o tramo que se arrastra o se atropella
     "lexico",      # una palabra mas precisa o que suena mejor: opcion, no correccion
+    "reiteracion",       # una idea o un dato que ya se conto, en el capitulo o antes
+    "sobreexplicacion",  # explicar lo que ya se mostro o el lector puede deducir
 }
 COLOR = {"correccion": ROJO, "supresion": ROJO, "comentario": AZUL, "sugerencia": VIOLETA}
 

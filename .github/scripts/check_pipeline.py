@@ -202,6 +202,25 @@ with tempfile.TemporaryDirectory() as tmp:
                        "nota": "Prueba de categoria."}])),
                   "--salida", str(t / "cj.docx")])
 
+    # Reiteracion y sobreexplicacion: sugerencias violetas, y nunca en azul.
+    espera_exito("violeta: reiteracion y sobreexplicacion",
+                 [str(ANOTA), "--fuente", str(fuente),
+                  "--marcas", str(marcas(t / "rs.json", [
+                      {"parrafo": 4, "tipo": "sugerencia", "buscar": "pero nadie se habia movido",
+                       "categoria": "reiteracion",
+                       "nota": "Ya se dijo en el parrafo 2 que nadie se movia."},
+                      {"parrafo": 2, "tipo": "sugerencia", "buscar": "El olor a cafe quemao le llego",
+                       "categoria": "sobreexplicacion",
+                       "nota": "La frase anterior ya lo muestra."}])),
+                  "--salida", str(t / "rs.docx")])
+    espera_fallo("violeta: la reiteracion no va en azul",
+                 [str(ANOTA), "--fuente", str(fuente),
+                  "--marcas", str(marcas(t / "ra.json", [
+                      {"parrafo": 4, "tipo": "comentario", "buscar": "pero nadie se habia movido",
+                       "categoria": "reiteracion", "texto": "Ya se dijo."}])),
+                  "--salida", str(t / "ra.docx")],
+                 "sugerencia", t / "ra.docx")
+
     # Tercer nivel: lo opcional va en violeta y solo con sus categorias.
     # La palabra que suena mejor es violeta: se acepta como sugerencia...
     espera_exito("violeta: la palabra que suena mejor es sugerencia",
