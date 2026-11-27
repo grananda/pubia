@@ -353,8 +353,8 @@ sugerencia que deja tal cual no es un rechazo: es una sugerencia descartada.
   función retórica**. El mismo verbo tres veces en dos líneas, sí; una anáfora,
   un leitmotiv o un personaje que repite por carácter, no.
 - **Redacción** (`redaccion`): una frase que obliga a releer para entenderla, una
-  construcción torpe que se puede señalar con el dedo, una idea dicha dos veces
-  seguidas.
+  construcción torpe que se puede señalar con el dedo. (Una idea dicha dos veces es
+  `reiteracion`, abajo.)
 - **Ritmo** (`ritmo`): un tramo que se arrastra o se atropella sin que el pasaje
   lo pida.
 - **Léxico** (`lexico`): una palabra que sonaría mejor en ese contexto o que sería
@@ -362,6 +362,47 @@ sugerencia que deja tal cual no es un rechazo: es una sugerencia descartada.
   registro del narrador). Una palabra por otra, con el motivo; no una frase
   reescrita. Nunca sobre oralidad, dialecto, léxico regional o inventado, ni sobre
   una imagen deliberada: eso es la voz, y no se toca.
+
+### Se señalan siempre: reiteración y sobreexplicación
+
+Dos sugerencias que el autor quiere ver **todas** para evaluarlas al final. Por
+eso tienen reglas propias: se marcan una a una, **no cuentan para el tope** de
+sugerencias por mil palabras y **no se resumen** en un recuento. Si dudas, se
+marcan: es el autor quien las filtra. Se exige, eso sí, la prueba.
+
+**Reiteración narrativa** (`reiteracion`): una idea, un dato o una explicación que
+el texto ya dio y vuelve a dar. No es la palabra repetida (eso es `repeticion`):
+es lo que se cuenta.
+
+- Dentro del capítulo: el narrador vuelve sobre algo que ya quedó claro unas
+  páginas antes (*que Tomás no se fiaba del mayordomo*, dicho en el párrafo 4 y
+  otra vez en el 19).
+- Entre capítulos: se vuelve a contar lo que el lector ya sabe desde un capítulo
+  anterior —un antecedente, el motivo de un personaje, cómo funciona algo—. Se
+  comprueba contra **«Lo que el lector ya sabe»** de `biblia/tramas.md`.
+- Un personaje que le cuenta a otro lo que el lector ya presenció: el personaje no
+  lo sabía, pero el lector lo relee. Se marca; si la escena lo justifica (la
+  reacción del que escucha), el autor lo dirá.
+- La `nota` dice **dónde se dijo antes**, con su párrafo o su capítulo y una cita
+  breve. Sin eso no es una reiteración, es una impresión.
+- Si parece un recordatorio deliberado (tras un salto largo, al abrir una parte),
+  se marca igual y se dice en la nota: el autor decide si el lector lo necesita.
+
+**Sobreexplicación** (`sobreexplicacion`): el texto explica lo que ya ha mostrado o
+lo que el lector puede deducir solo.
+
+- La emoción nombrada justo después de mostrarla (*Le temblaban las manos. Estaba
+  nervioso.*).
+- El narrador que traduce el subtexto de un diálogo que ya lo decía.
+- La acotación que explica el tono que el parlamento ya lleva (*—¡Fuera de aquí!
+  —gritó, furioso.*).
+- El motivo de un personaje justificado de más, o explicado cuando la escena ya lo
+  dejaba ver.
+- La metáfora o la ironía explicada a continuación.
+- El diálogo que cuenta lo que ambos personajes saben, solo para informar al
+  lector.
+- La `nota` dice qué es lo que ya estaba mostrado y dónde. La propuesta, si la hay,
+  suele ser quitar, y se ofrece sin reescribir: *[¿sobra «Estaba nervioso»?]*.
 
 ### Se dicen una sola vez, con recuento
 
@@ -380,7 +421,8 @@ mano en su bolsillo*) · dijo-ismos en cadena · frases que pierden el sujeto.
   reescritura. Si no hay una mínima, sin propuesta: basta con el motivo.
 - Por encima de unas 5 sugerencias por mil palabras, quedarse con las que más
   chirrían y resumir el resto en una con recuento. Un documento lleno de violeta
-  entierra el rojo y el azul.
+  entierra el rojo y el azul. **`reiteracion` y `sobreexplicacion` no cuentan para
+  este tope ni se resumen**: se señalan todas.
 - Nunca violeta: la voz del autor, la oralidad, el léxico regional e inventado,
   la repetición con función, y cualquier cosa recogida en `biblia/decisiones.md`.
 

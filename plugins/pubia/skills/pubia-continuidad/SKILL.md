@@ -3,7 +3,7 @@ name: pubia-continuidad
 description: PUBIA skill. Cross-novel continuity audit via the command `pubia continuidad`: unlike `pubia revisa`, which works chapter by chapter, this one reads the whole manuscript against the bible and hunts what is only visible from above -- timeline impossibilities and derived ages, knowledge state (a character using a fact they cannot have yet, or asking about what they were already told), threads planted and never resolved and resolutions never planted, name drift, traits and objects that mutate between distant chapters, repeated scene beats, stalled arcs, accumulated anachronisms. It delivers a prioritized Markdown report with chapter references and quotes; it corrects no prose and proposes no style. Use when the user says "pubia continuidad", "revisa la coherencia de la novela", "que cabos sueltos tengo", "cuadra la cronologia", or before closing a draft.
 metadata:
   author: Julio Fernández
-  version: "0.3.1"
+  version: "0.3.3"
 ---
 
 # pubia-continuidad (PUBIA)
@@ -51,7 +51,7 @@ Write in the author's language (Spanish by default).
 
 **Época.** Anachronisms accumulated across the whole novel, including lexical ones, and inconsistencies in the era's own rules (what one chapter says is forbidden, another allows with no comment).
 
-**Estructura y repetición.** Scenes that repeat the same beat, chapters that open the same way, a resource used so often it has become a tic (the same gesture, the same weather, the same kind of cliffhanger).
+**Estructura y repetición.** Scenes that repeat the same beat, chapters that open the same way, a resource used so often it has become a tic (the same gesture, the same weather, the same kind of cliffhanger). And **ideas told again across distant chapters**: the same backstory, motive or explanation given to the reader twice or more -- start from the rows of *Lo que el lector ya sabe* in `tramas.md` that list more than one chapter, then quote each telling. Report them all, under their own heading (*Reiteraciones*), even the ones that may be deliberate reminders: the author weighs them.
 
 ## Report format
 
@@ -68,6 +68,11 @@ Cubre caps. 1-14 · biblia a 2026-11-09 · 61 400 palabras
 
 ## Importantes
 ...
+## Reiteraciones
+| Qué se vuelve a contar | Dónde | Nota |
+|---|---|---|
+| Por qué Tomás desconfía del mayordomo | cap. 4 · cap. 9 · cap. 13 | el 13 lo explica como si fuera nuevo |
+
 ## Cabos sueltos
 | Hilo | Plantado | Estado |
 |---|---|---|

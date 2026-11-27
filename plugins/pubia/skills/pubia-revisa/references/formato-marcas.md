@@ -99,7 +99,10 @@ inexactitud **comprobada**), `incertidumbre` (las fuentes no concluyen),
 **Sugerencias (violeta). Opcionales, el autor las toma o las deja:**
 `cacofonia`, `repeticion` (misma palabra muy cerca, sin función retórica),
 `redaccion`, `ritmo`, `lexico` (una palabra que sonaría mejor o sería más precisa;
-nunca sobre oralidad, dialecto ni léxico de la novela). El fragmento va en violeta con subrayado punteado, la
+nunca sobre oralidad, dialecto ni léxico de la novela), `reiteracion` (una idea o un
+dato que ya se contó; la `nota` dice dónde) y `sobreexplicacion` (explicar lo que ya
+se mostró; la `nota` dice qué y dónde). Estas dos últimas se señalan todas: no tienen
+tope. El fragmento va en violeta con subrayado punteado, la
 propuesta (si la hay) entre corchetes, y la `nota` al margen. Una categoría de
 sugerencia en un `comentario` se rechaza: lo opcional no va en azul.
 

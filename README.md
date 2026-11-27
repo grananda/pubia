@@ -20,7 +20,9 @@ imperativo:
   ambigüedad real, lógica narrativa, cambio involuntario de caracterización—.
 - **Violeta**, sugerencias **opcionales** que el autor toma o deja: cacofonías,
   repeticiones muy cercanas, redacción que obliga a releer, ritmo, la palabra que
-  sonaría mejor.
+  sonaría mejor. Y, señaladas **todas** para que el autor las evalúe al final, la
+  **reiteración** (ideas o datos que ya se contaron, en el capítulo o antes) y la
+  **sobreexplicación** (explicar lo que ya se ha mostrado).
 
 Lo que hace la voz del autor —oralidad, dialecto, léxico regional e inventado, la
 imagen deliberada— no se marca en ningún color. El documento cierra con una sección de **impresión como lector**, que no
@@ -38,7 +40,7 @@ flowchart TD
     S["Scrivener<br/>escribes el capítulo"]
     D["Novela-sync/Draft/<br/>un fichero por escena"]
     L["leer_manuscrito.py<br/>texto canónico + huella"]
-    R["pubia revisa<br/>ocho pasadas"]
+    R["pubia revisa<br/>nueve pasadas"]
     I["Investigación con fuentes<br/>primero fecha la escena"]
     A["anota_docx.py"]
     X["cap-12-v1.docx<br/>rojo en línea, comentarios de Word<br/>e impresión como lector"]
@@ -85,7 +87,7 @@ pubia continuidad    ->  auditoría de toda la novela: cronología, quién sabe 
 |---|---|---|
 | `pubia-setup` | `pubia setup` | Prepara la carpeta de la novela, escribe `pubia.json` y explica cómo activar la sincronización con carpeta externa de Scrivener. |
 | `pubia-biblia` | `pubia biblia` | Construye y mantiene `biblia/`: la memoria de la novela (personajes, cronología, lugares, tramas, léxico, decisiones). Incremental por huella de cada documento. |
-| `pubia-revisa` | `pubia revisa cap 12` | El corrector. Ocho pasadas (variedad y tratamiento, ortografía, puntuación, gramática con preposiciones y conjunciones, continuidad, historia investigada con fuentes, narrativa, lectura en voz alta), un `.docx` de sugerencias y la impresión como lector. |
+| `pubia-revisa` | `pubia revisa cap 12` | El corrector. Nueve pasadas (variedad y tratamiento, ortografía, puntuación, gramática con preposiciones y conjunciones, continuidad, historia investigada con fuentes, narrativa, lectura en voz alta, reiteración y sobreexplicación), un `.docx` de sugerencias y la impresión como lector. |
 | `pubia-continuidad` | `pubia continuidad` | Auditoría transversal de la obra completa. Informe en Markdown, priorizado, con citas. |
 | `pubia-decisiones` | `pubia decisiones cap 12` | Cierra el ciclo: registra lo que el autor rechazó para no volver a marcarlo. |
 
@@ -255,7 +257,7 @@ número que todavía no tiene etiqueta, así que es idempotente.
 
 ## Estado
 
-Plugin `pubia` en la versión 0.3.2 (marketplace en `VERSION`). La 0.2.0 incorporó la
+Plugin `pubia` en la versión 0.3.3 (marketplace en `VERSION`). La 0.2.0 incorporó la
 doctrina de corrección conservadora: principio rector, umbrales de rojo y azul,
 variedades del español y tratamiento, oralidad que no se normaliza, protocolo de
 investigación con fuentes e impresión como lector. La 0.3.0 la afina y la hace
