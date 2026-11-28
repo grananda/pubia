@@ -148,6 +148,18 @@ with tempfile.TemporaryDirectory() as tmp:
         else:
             hechas.append("comentarios OOXML reales, rojo tachado, violeta punteado, vinetas y sidecar")
 
+        # Numero de parrafo al margen: el id de la fuente, en gris y pequeno,
+        # en los parrafos de texto (no en titulos ni separadores).
+        ids_texto = [str(p["id"]) for p in d["parrafos"] if p["tipo"] not in ("titulo", "separador")]
+        numeros = [r.text.strip() for p in doc.paragraphs for r in p.runs[:1]
+                   if r.text.endswith("\t") and r.font.color.rgb is not None
+                   and str(r.font.color.rgb) == "595959"]
+        if numeros != ids_texto:
+            fallos.append(f"docx: los numeros de parrafo al margen no son los ids de la fuente "
+                          f"({numeros} frente a {ids_texto})")
+        else:
+            hechas.append("numero de parrafo al margen igual al id de la fuente")
+
     espera_fallo("anclaje que no resuelve",
                  [str(ANOTA), "--fuente", str(fuente),
                   "--marcas", str(marcas(t / "mal.json", [

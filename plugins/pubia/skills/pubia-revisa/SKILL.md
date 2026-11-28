@@ -3,7 +3,7 @@ name: pubia-revisa
 description: PUBIA skill. Conservative review of a novel chapter via the command `pubia revisa`, delivering a .docx of suggestions that NEVER overwrites the manuscript. Governing principle: do not write for the author. It reads the chapter from the Scrivener sync folder, cross-checks it against the novel bible and emits a Word document in three tiers: red inline only for crucial objective errors (spelling, grammar, gender and number agreement, dialogue dashes, tratamiento, established names); blue margin comments for what demands a stop (continuity, verified historical inaccuracy, real ambiguity, narrative logic); violet optional suggestions the author may take or leave (cacophony, close repetition, clumsy wording, rhythm, a better-sounding word). It respects the author's voice and dialect, researches before claiming an anachronism, and closes with a frank "Impresion como lector". Use when the user says "revisa el capitulo 12", "corrige esta escena", "pasa el corrector", "pubia revisa", or similar.
 metadata:
   author: Julio Fernández
-  version: "0.3.3"
+  version: "0.3.4"
 ---
 
 # pubia-revisa (PUBIA)

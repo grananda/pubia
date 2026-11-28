@@ -141,6 +141,11 @@ cuerpo, en cursiva y cuerpo menor, con el formato `COMENTARIO #n CATEGORIA — s
 «frase exacta»: explicación` en azul (o `SUGERENCIA #n …` en violeta).
 `ambos` hace las dos cosas. La tipografía por defecto es Times New Roman 11.
 
+Cada párrafo de texto lleva su número en el margen izquierdo, pequeño y en gris:
+es el `id` de `*.fuente.json`, el mismo que `parrafo` en las marcas y que la columna
+«Párr.» de la tabla final, para que el autor pueda decir «el párrafo 42». Títulos y
+separadores no se numeran. `--sin-numeros` los quita.
+
 ## Convención de nombres
 
 ```
