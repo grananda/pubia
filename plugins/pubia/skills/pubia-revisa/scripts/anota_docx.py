@@ -281,8 +281,25 @@ def nota_inline(doc: Document, marca: dict, cuerpo: str, cita: str) -> None:
     resto.font.color.rgb = color
 
 
+def numero_al_margen(p, n: int) -> None:
+    """Numero del parrafo en el margen izquierdo, pequeno y gris.
+
+    Es el `id` de la fuente: el mismo de la columna «Párr.» de la tabla final y
+    el que usan las marcas, para que el autor pueda decir «el párrafo 42». Va
+    fuera de la caja de texto (sangria negativa y un tabulador que devuelve la
+    primera linea a su sangria de siempre), asi que no altera la composicion.
+    """
+    formato = p.paragraph_format
+    formato.first_line_indent = Cm(-1.2)
+    formato.tab_stops.add_tab_stop(Cm(0.8))
+    run = p.add_run(f"{n}\t")
+    run.font.size = Pt(7)
+    run.font.color.rgb = GRIS
+
+
 def parrafo_marcado(doc: Document, parrafo: dict, grupo: list[dict], autor: str,
-                    iniciales: str, avisos: list[str], modo: str = "margen") -> None:
+                    iniciales: str, avisos: list[str], modo: str = "margen",
+                    numerar: bool = True) -> None:
     texto = parrafo["texto"]
     tipo_p = parrafo["tipo"]
 
@@ -296,6 +313,8 @@ def parrafo_marcado(doc: Document, parrafo: dict, grupo: list[dict], autor: str,
     else:
         p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
         p.paragraph_format.first_line_indent = Cm(0.8)
+        if numerar:
+            numero_al_margen(p, parrafo["id"])
 
     correcciones = [m for m in grupo if m["tipo"] in TIPOS_CORRECCION]
     # Comentarios y sugerencias se anclan igual: envuelven tramos del texto.
@@ -468,7 +487,8 @@ def portada(doc: Document, fuente: dict, marcas_json: dict, agrupadas: dict, aut
         ("En violeta", VIOLETA, True),
         (", sugerencias opcionales: cacofonías, repeticiones cercanas, redacción, ritmo y la palabra que "
          "podría sonar mejor. El fragmento va subrayado en punteado y la propuesta, si la hay, entre "
-         "corchetes; puedes tomarla o dejarla. Cada marca lleva un número que coincide con la tabla final.",
+         "corchetes; puedes tomarla o dejarla. Cada marca lleva un número que coincide con la tabla final. "
+         "El número gris del margen izquierdo es el del párrafo (columna «Párr.» de la tabla).",
          None, False),
     ]:
         run = ley.add_run(texto)
@@ -634,6 +654,8 @@ def main() -> int:
     ap.add_argument("--impresion", help="Fichero de texto con la seccion final 'Impresion como lector'")
     ap.add_argument("--tipografia", default="Times New Roman", help="Fuente del cuerpo")
     ap.add_argument("--cuerpo", type=float, default=11, help="Tamano del cuerpo en puntos")
+    ap.add_argument("--sin-numeros", action="store_true",
+                    help="No numerar los parrafos en el margen izquierdo")
     ap.add_argument("--tolerante", action="store_true",
                     help="No abortar si una marca no ancla: la omite y la reporta")
     args = ap.parse_args()
@@ -664,7 +686,7 @@ def main() -> int:
             doc.add_page_break()
         documento_actual = parrafo["documento"]
         parrafo_marcado(doc, parrafo, agrupadas.get(parrafo["id"], []), autor, iniciales, avisos,
-                        args.comentarios)
+                        args.comentarios, numerar=not args.sin_numeros)
 
     tabla_resumen(doc, agrupadas)
 
